@@ -15,7 +15,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     env_file:
-      - .env
+      - .env_for_docker
     depends_on:
       db:
         condition: service_healthy
@@ -26,11 +26,13 @@ services:
 
   migrations:
     build: .
+#      context: .
+#      dockerfile: Dockerfile
     depends_on:
       db:
         condition: service_healthy
     env_file:
-      - .env
+      - .env_for_docker
     command: >
       sh -c "python3 manage.py migrate"
 
@@ -42,7 +44,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     restart: always
     env_file:
-      - .env
+      - .env_for_docker
     ports:
       - 5432:5432
     volumes:
