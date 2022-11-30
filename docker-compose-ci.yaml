@@ -13,7 +13,7 @@ services:
     image: devoind/sk_evedrov_diploma:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     restart: always
     environment:
-      DEBUG: ${DEBUG}
+      DEBUG: False
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
