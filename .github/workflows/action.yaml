@@ -54,3 +54,4 @@ jobs:
             echo ${{ secrets.PASSWORD }} | sudo -S docker-compose up -d
 
 
+
