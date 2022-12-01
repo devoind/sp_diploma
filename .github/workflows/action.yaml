@@ -16,8 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build_and_push
     env:
-#      DEBUG: ${{ secrets.DEBUG }}
-#      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
@@ -49,6 +47,4 @@ jobs:
             cd todolist
             echo ${{ secrets.PASSWORD }} | sudo -S docker-compose down
             echo ${{ secrets.PASSWORD }} | sudo -S docker-compose up -d
-
-
-"sudo -S убрать и deploy в группу docker"
+            echo ${{ secrets.PASSWORD }} | sudo -S docker system prune -a -f
