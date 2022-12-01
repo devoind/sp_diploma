@@ -1,6 +1,7 @@
 FROM python:3.10-slim
 
-ENV PYTHONBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
@@ -12,4 +13,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver", "migrate", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "makemigrations", "migrate", "0.0.0.0:8000"]
