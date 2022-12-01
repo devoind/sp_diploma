@@ -9,18 +9,15 @@ jobs:
       - name: docker build
         run: docker build -t devoind/sk_evedrov_diploma:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
       - name: docker login
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
+        run: echo ${{ secrets.DOCKER_TOKEN}} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
       - name: docker push
         run: docker push devoind/sk_evedrov_diploma:$GITHUB_REF_NAME-$GITHUB_RUN_ID
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_push
     env:
-      DEBUG: ${{ secrets.DEBUG }}
-      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+#      DEBUG: ${{ secrets.DEBUG }}
+#      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
@@ -54,5 +51,4 @@ jobs:
             echo ${{ secrets.PASSWORD }} | sudo -S docker-compose up -d
 
 
-
-
+"sudo -S убрать и deploy в группу docker"
