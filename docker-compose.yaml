@@ -2,16 +2,18 @@ version: "3.9"
 
 services:
   frontend:
-    image: sermalenk/skypro-front:lesson-34
+    image: sermalenk/skypro-front:lesson-35
     restart: always
     depends_on:
       - api
     ports:
-      - "80:80"
+      - 80:80
 
   api:
     build:
       context: .
+      dockerfile: Dockerfile
+    image: devoind/sk_evedrov_diploma
     restart: always
     env_file:
       - .env
