@@ -13,7 +13,7 @@ services:
     image: devoind/sk_evedrov_diploma:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     restart: always
     environment:
-      DEBUG: True
+      DEBUG: False
       POSTGRES_HOST: 'db'
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -31,7 +31,7 @@ services:
   migrations:
      image: devoind/sk_evedrov_diploma:$GITHUB_REF_NAME-$GITHUB_RUN_ID
      environment:
-       DEBUG: True
+       DEBUG: False
        POSTGRES_HOST: 'db'
        POSTGRES_USER: ${POSTGRES_USER}
        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -43,10 +43,11 @@ services:
      depends_on:
        db:
          condition: service_healthy
-     command: python manage.py migrate
+     command:  >
+        sh -c "python3 manage.py migrate"
 
   db:
-    image: postgres:latest
+    image: postgres:15.0-alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
