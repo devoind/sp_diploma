@@ -27,14 +27,21 @@ services:
       - "8000:8000"
 
   migrations:
-    build: .
+    build:
+      context: .
+    environment:
+      DEBUG: True
+      SECRET_KEY: 'very_secret_key'
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST: 'db'
+      POSTGRES_PORT: 5432
     depends_on:
       db:
         condition: service_healthy
-    env_file:
-      - .env
-    command: >
-      sh -c "python3 manage.py migrate"
+    command:
+      sh -c "python manage.py migrate"
 
   db:
     image: postgres:latest
@@ -48,9 +55,9 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./pg_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
