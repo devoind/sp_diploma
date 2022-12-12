@@ -1,118 +1,48 @@
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework import permissions, filters
-from rest_framework.pagination import LimitOffsetPagination
-
-from goals.filters import GoalDateFilter
-from goals.models import GoalCategory, Goal, GoalComment
-from goals.serializers import GoalCreateSerializer, GoalCategorySerializer, GoalCategoryCreateSerializer, \
-    GoalSerializer, GoalCommentCreateSerializer, GoalCommentSerializer
+from rest_framework import generics, status, permissions
+from rest_framework.response import Response
 
 
-class GoalCategoryCreateView(CreateAPIView):
-    model = GoalCategory
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = GoalCategoryCreateSerializer
+from django.contrib.auth import get_user_model, login, logout
+
+from . import serializers
+from .serializers import UpdatePasswordSerializer
+
+USER_MODEL = get_user_model()
 
 
-class GoalCategoryListView(ListAPIView):
-    model = GoalCategory
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = GoalCategorySerializer
-    pagination_class = LimitOffsetPagination
-    filter_backends = [
-        filters.OrderingFilter,
-        filters.SearchFilter,
-    ]
-    ordering_fields = ["title", "created"]
-    ordering = ["title"]
-    search_fields = ["title"]
-
-    def get_queryset(self):
-        return GoalCategory.objects.filter(
-            user=self.request.user, is_deleted=False
-        )
+class RegistrationView(generics.CreateAPIView):
+    model = USER_MODEL
+    serializer_class = serializers.RegistrationSerializer
 
 
-class GoalCategoryView(RetrieveUpdateDestroyAPIView):
-    model = GoalCategory
-    serializer_class = GoalCategorySerializer
+class LoginView(generics.CreateAPIView):
+    model = USER_MODEL
+    serializer_class = serializers.LoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        login(request=request, user=user)
+        return Response(serializer.data)
+
+
+class ProfileView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = serializers.ProfileSerializer
+    queryset = USER_MODEL.objects.all()
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        return GoalCategory.objects.filter(user=self.request.user, is_deleted=False)
+    def get_object(self):
+        return self.request.user
 
-    def perform_destroy(self, instance):
-        instance.is_deleted = True
-        instance.save()
-        return instance
+    def delete(self, request, *args, **kwargs):
+        logout(request)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class GoalCreateView(CreateAPIView):
-    model = Goal
+class UpdatePasswordView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = GoalCreateSerializer
+    serializer_class = UpdatePasswordSerializer
 
-
-class GoalListView(ListAPIView):
-    model = Goal
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = GoalSerializer
-    filter_backends = [
-        DjangoFilterBackend,
-        filters.OrderingFilter,
-        filters.SearchFilter,
-    ]
-    filter_set_class = GoalDateFilter
-    ordering_fields = ['title', 'created']
-    ordering = ['title']
-    search_fields = ['title']
-
-    def get_queryset(self):
-        return Goal.objects.filter(user=self.request.user).exclude(Goal.Status.archived)
-
-
-class GoalView(RetrieveUpdateDestroyAPIView):
-    model = Goal
-    serializer_class = GoalSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return Goal.objects.filter(user=self.request.user)
-
-    def perform_destroy(self, instance):
-        instance.status = Goal.Status.archived
-        instance.save()
-        return instance
-
-
-class GoalCommentCreateView(CreateAPIView):
-    model = GoalComment
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = GoalCommentCreateSerializer
-
-
-class GoalCommentListView(ListAPIView):
-    model = GoalComment
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = GoalCommentSerializer
-    filter_backends = [
-        DjangoFilterBackend,
-        filters.OrderingFilter,
-        filters.SearchFilter,
-    ]
-
-    ordering_fields = ["goal"]
-    ordering = ["-created"]
-
-    def get_queryset(self):
-        return GoalComment.objects.filter(user=self.request.user)
-
-
-class GoalCommentView(RetrieveUpdateDestroyAPIView):
-    model = GoalComment
-    serializer_class = GoalCommentSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return GoalComment.objects.filter(user=self.request.user)
+    def get_object(self):
+        return self.request.user
