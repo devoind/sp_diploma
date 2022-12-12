@@ -45,7 +45,6 @@ INSTALLED_APPS = [
 
     # create user
     'core',
-
     'goals',
 
     # third-party apps
@@ -53,7 +52,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'social_django',
     'django_filters',
-    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -93,11 +91,11 @@ WSGI_APPLICATION = 'todolist.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',  # убрал _psycopg2
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': env.str('POSTGRES_DB'),
         'USER': env.str('POSTGRES_USER'),
         'PASSWORD': env.str('POSTGRES_PASSWORD'),
-        'HOST': env.str('POSTGRES_HOST'),
+        'HOST': env.str('POSTGRES_HOST', default='127.0.0.1'),
         'PORT': env.int('POSTGRES_PORT'),
     }
 }
@@ -159,8 +157,11 @@ SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
 SOCIAL_AUTH_VK_OAUTH2_KEY = env.str('SOCIAL_AUTH_VK_OAUTH2_KEY')
 SOCIAL_AUTH_VK_OAUTH2_SECRET = env.str('SOCIAL_AUTH_VK_OAUTH2_SECRET')
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/logged-in/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/categories'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
+
+
+# REST_FRAMEWORK
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',

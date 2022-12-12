@@ -1,5 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework import permissions, filters, generics
 
 from goals.filters import GoalDateFilter
@@ -12,10 +12,10 @@ from goals.serializers import GoalCategoryCreateSerializer, GoalCategorySerializ
 class GoalCategoryCreateView(CreateAPIView):
     model = GoalCategory
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = GoalCategoryCreateSerializer
+    serializer_class = GoalCreateSerializer
 
 
-class GoalCategoryListView(ListAPIView):
+class GoalCategoryListView(generics.ListAPIView):
     model = GoalCategory
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = GoalCategorySerializer

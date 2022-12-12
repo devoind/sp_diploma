@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from goals.models import GoalCategory, Goal, GoalComment
+
 from core.serializers import ProfileSerializer
+from goals.models import GoalCategory, Goal, GoalComment
 
 
 class GoalCategoryCreateSerializer(serializers.ModelSerializer):
@@ -8,8 +9,8 @@ class GoalCategoryCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GoalCategory
-        read_only_fields = ('id', 'created', 'updated', 'user')
         fields = '__all__'
+        read_only_fields = ('id', 'created', 'updated', 'user')
 
 
 class GoalCategorySerializer(serializers.ModelSerializer):
@@ -26,15 +27,15 @@ class GoalCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Goal
-        read_only_fields = ('id', 'created', 'updated', 'user')
         fields = '__all__'
+        read_only_fields = ('id', 'created', 'updated', 'user')
 
     def validate_category(self, value):
         if value.is_deleted:
-            raise serializers.ValidationError('not allowed in deleted category')
+            raise serializers.ValidationError("not allowed in deleted category")
 
-        if value.user != self.context['request'].user:
-            raise serializers.ValidationError('not owner of category')
+        if value.user != self.context["request"].user:
+            raise serializers.ValidationError("not owner of category")
 
         return value
 
@@ -47,11 +48,11 @@ class GoalSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('id', 'created', 'updated', 'user')
 
-        def validate_category(self, value):
-            if value.user != self.context['request'].user:
-                raise serializers.ValidationError('not owner of category')
+    def validate_category(self, value):
+        if value.user != self.context["request"].user:
+            raise serializers.ValidationError("not owner of category")
 
-            return value
+        return value
 
 
 class GoalCommentCreateSerializer(serializers.ModelSerializer):
@@ -69,4 +70,4 @@ class GoalCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = GoalComment
         fields = '__all__'
-        read_only_fields = ('id', 'created', 'updated', 'user', 'goal')
+        read_only_fields = ('id', 'created', 'updated', 'user')

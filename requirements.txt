@@ -5,7 +5,6 @@ psycopg2-binary==2.9.5
 djangorestframework==3.14.0
 django-cors-headers==3.13.0
 django-filter==22.1
-drf-spectacular==0.24.2
 social-auth-app-django==5.0.0
 sqlparse==0.4.3
 tzdata==2022.7
