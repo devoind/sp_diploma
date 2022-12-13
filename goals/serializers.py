@@ -9,8 +9,8 @@ class GoalCategoryCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GoalCategory
-        fields = '__all__'
         read_only_fields = ('id', 'created', 'updated', 'user')
+        fields = '__all__'
 
 
 class GoalCategorySerializer(serializers.ModelSerializer):
@@ -26,16 +26,16 @@ class GoalCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
-        model = Goal
-        fields = '__all__'
+        model = GoalCategory
         read_only_fields = ('id', 'created', 'updated', 'user')
+        fields = '__all__'
 
     def validate_category(self, value):
         if value.is_deleted:
-            raise serializers.ValidationError("not allowed in deleted category")
+            raise serializers.ValidationError("Not allowed in deleted category")
 
         if value.user != self.context["request"].user:
-            raise serializers.ValidationError("not owner of category")
+            raise serializers.ValidationError("Not owner of category")
 
         return value
 
@@ -45,12 +45,12 @@ class GoalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Goal
-        fields = '__all__'
         read_only_fields = ('id', 'created', 'updated', 'user')
+        fields = '__all__'
 
     def validate_category(self, value):
         if value.user != self.context["request"].user:
-            raise serializers.ValidationError("not owner of category")
+            raise serializers.ValidationError("Not owner of category")
 
         return value
 
@@ -60,8 +60,8 @@ class GoalCommentCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GoalComment
-        fields = '__all__'
         read_only_fields = ('id', 'created', 'updated', 'user')
+        fields = '__all__'
 
 
 class GoalCommentSerializer(serializers.ModelSerializer):
@@ -69,5 +69,5 @@ class GoalCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GoalComment
-        fields = '__all__'
         read_only_fields = ('id', 'created', 'updated', 'user')
+        fields = '__all__'
