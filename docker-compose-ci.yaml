@@ -49,7 +49,7 @@ services:
         sh -c "python3 manage.py migrate"
 
   db:
-    image: postgres:15.0-alpine
+    image: postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
