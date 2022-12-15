@@ -11,9 +11,7 @@ class GoalFilter(django_filters.rest_framework.FilterSet):
                   'priority': ['exact', 'in'],
                   'due_date': ['lte', 'gte'],
                   'status': ['exact', 'in']}
-        filter_overrides = {
-            models.DateTimeField: {"filter_class": django_filters.IsoDateTimeFilter},
-        }
+        filter_overrides = {models.DateTimeField: {"filter_class": django_filters.IsoDateTimeFilter}, }
 
 
 class GoalCommentFilter(django_filters.rest_framework.FilterSet):
