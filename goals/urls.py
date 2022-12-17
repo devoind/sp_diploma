@@ -1,17 +1,22 @@
 from django.urls import path
-from goals import views
+
+from goals.views import GoalCategoryCreateAPIView, GoalCategoryListAPIView, GoalCategoryDetailUpdateDeleteAPIView, \
+    GoalCreateAPIView, GoalListAPIView, GoalDetailUpdateDeleteAPIView, GoalCommentCreateAPIView, GoalCommentListAPIView, \
+    GoalCommentDetailUpdateDeleteAPIView, BoardCreateAPIView, BoardListAPIView, BoardDetailUpdateDeleteAPIView
 
 urlpatterns = [
+    path('goal_category/create', GoalCategoryCreateAPIView.as_view(), name='goal_category_create'),
+    path('goal_category/list', GoalCategoryListAPIView.as_view(), name='goal_category_list'),
+    path('goal_category/<int:pk>', GoalCategoryDetailUpdateDeleteAPIView.as_view(), name='goal_category_pk'),
+    path('goal/create', GoalCreateAPIView.as_view(), name='goal_create'),
+    path('goal/list', GoalListAPIView.as_view(), name='goal_list'),
+    path('goal/<int:pk>', GoalDetailUpdateDeleteAPIView.as_view(), name='goal_detail_update_delete'),
 
-    path('goal_category/create', views.GoalCategoryCreateView.as_view(), name='goal_category_create'),
-    path('goal_category/list', views.GoalCategoryListView.as_view(), name='goal_category_list'),
-    path('goal_category/<pk>', views.GoalCategoryView.as_view(), name='goal_category_pk'),
+    path('goal_comment/create', GoalCommentCreateAPIView.as_view(), name='goal_comment_create'),
+    path('goal_comment/list', GoalCommentListAPIView.as_view(), name='goal_comment_list'),
+    path('goal_comment/<int:pk>', GoalCommentDetailUpdateDeleteAPIView.as_view(), name='goal_comment_pk'),
 
-    path('goal/create', views.GoalCreateView.as_view(), name='goal_create'),
-    path('goal/list', views.GoalListView.as_view(), name='goal_list'),
-    path('goal/<pk>', views.GoalView.as_view(), name='goal_pk'),
-
-    path('goal_comment/create', views.CommentCreateView.as_view(), name='goal_comment_create'),
-    path('goal_comment/list', views.CommentListView.as_view(), name='goal_comment_list'),
-    path('goal_comment/<pk>', views.CommentView.as_view(), name='goal_comment_pk'),
+    path('board/create', BoardCreateAPIView.as_view(), name='board_create'),
+    path('board/list', BoardListAPIView.as_view(), name='board_list'),
+    path('board/<int:pk>', BoardDetailUpdateDeleteAPIView.as_view(), name='board_detail_update_delete'),
 ]
