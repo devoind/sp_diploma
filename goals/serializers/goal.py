@@ -4,6 +4,7 @@ from core.serializers import ProfileSerializer
 from goals.models import Goal
 
 
+# Serializer для Целей
 class GoalCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 

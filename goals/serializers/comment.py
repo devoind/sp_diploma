@@ -4,19 +4,20 @@ from core.serializers import ProfileSerializer
 from goals.models import GoalComment
 
 
+# Serializer для Комментарий
 class CommentCreateSerializer(serializers.ModelSerializer):
-	user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
-	class Meta:
-		model = GoalComment
-		read_only_fields = ('id', 'user', 'created', 'updated', 'goal')
-		fields = '__all__'
+    class Meta:
+        model = GoalComment
+        read_only_fields = ('id', 'user', 'created', 'updated', 'goal')
+        fields = '__all__'
 
 
 class CommentSerializer(serializers.ModelSerializer):
-	user = ProfileSerializer(read_only=True)
+    user = ProfileSerializer(read_only=True)
 
-	class Meta:
-		model = GoalComment
-		read_only_fields = ('id', 'user', 'created', 'updated', 'goal')
-		fields = '__all__'
+    class Meta:
+        model = GoalComment
+        read_only_fields = ('id', 'user', 'created', 'updated', 'goal')
+        fields = '__all__'

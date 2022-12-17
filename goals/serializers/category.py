@@ -3,6 +3,7 @@ from goals.models import GoalCategory
 from core.serializers import ProfileSerializer
 
 
+# Serializer для Категорий
 class CategoryCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
