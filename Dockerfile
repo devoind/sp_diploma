@@ -12,6 +12,6 @@ COPY core core
 COPY goals goals
 COPY todolist todolist
 COPY manage.py .
-#COPY README.md .
+COPY README.md .
 
 CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
