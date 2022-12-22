@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   frontend:
-    image: sermalenk/skypro-front:lesson-37
+    image: sermalenk/skypro-front:lesson-38
     restart: always
     depends_on:
       - api
@@ -23,11 +23,29 @@ services:
       LANGUAGE_CODE: 'ru-ru'
       SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
       SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET}
+      BOT_TOKEN: ${BOT_TOKEN}
     depends_on:
       db:
         condition: service_healthy
       migrations:
         condition: service_completed_successfully
+
+  bot:
+    image: devoind/sk_evedrov_diploma:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    restart: always
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+    environment:
+      DEBUG: False
+      SECRET_KEY: ${SECRET_KEY}
+      SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
+      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET}
+      BOT_TOKEN: ${BOT_TOKEN}
+    command: >
+      bash -c 'python manage.py runbot'
 
   migrations:
      image: devoind/sk_evedrov_diploma:$GITHUB_REF_NAME-$GITHUB_RUN_ID
@@ -42,11 +60,13 @@ services:
        LANGUAGE_CODE: 'ru-ru'
        SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY}
        SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET}
+       BOT_TOKEN: ${BOT_TOKEN}
      depends_on:
        db:
          condition: service_healthy
      command:  >
         sh -c "python3 manage.py migrate"
+#       bash -c 'python3 manage.py makemigrations && python3 manage.py migrate'
 
   db:
     image: postgres:15.0-alpine
