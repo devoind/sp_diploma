@@ -1,4 +1,4 @@
-from django.conf import settings
+# from django.conf import settings
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -6,19 +6,19 @@ from rest_framework.response import Response
 from bot.models import TgUser
 
 from .serializers import TgUserSerializer
-from .tg.client import TgClient
+# from .tg.client import TgClient
 
 
 class BotVerificationView(generics.UpdateAPIView):
     model = TgUser
     permission_classess = [IsAuthenticated]
     serializer_class = TgUserSerializer
-    http_method_names = ["patch"]
+    http_method_names = ['patch']
 
     def patch(self, request, *args, **kwargs):
         data = self.serializer_class(request.data).data
-        tg_client = TgClient(settings.BOT_TOKEN)
-        tg_user = TgUser.objects.filter(verification_code=data["verification_code"]).first()
+        # tg_client = TgClient(settings.BOT_TOKEN)
+        tg_user = TgUser.objects.filter(verification_code=data['verification_code']).first()
 
         if not tg_user:
             return Response(status=status.HTTP_400_BAD_REQUEST)

@@ -36,7 +36,7 @@ class MessageChat:
 @dataclass
 class Message:
     message_id: int
-    msg_from: MessageFrom = field(metadata={"data_key": "from"})
+    msg_from: MessageFrom = field(metadata={'data_key': 'from'})
     chat: MessageChat
     date: int
     text: str | None
