@@ -1,57 +1,54 @@
-from __future__ import annotations
+from dataclasses import dataclass, field
+from typing import List, Optional
 
-from typing import List
-from dataclasses import field
-
+import marshmallow
 import marshmallow_dataclass
-from marshmallow_dataclass import dataclass
-from marshmallow import EXCLUDE
 
 
 @dataclass
 class MessageFrom:
     id: int
     is_bot: bool
-    first_name: str | None
-    last_name: str | None
-    username: str
+    first_name: Optional[str]
+    last_name: Optional[str]
+    username: Optional[str]
 
     class Meta:
-        unknown = EXCLUDE
+        unknown = marshmallow.EXCLUDE
 
 
 @dataclass
-class MessageChat:
+class Chat:
     id: int
-    title: str | None
-    first_name: str | None
-    last_name: str | None
-    username: str | None
+    username: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
     type: str
 
     class Meta:
-        unknown = EXCLUDE
+        unknown = marshmallow.EXCLUDE
 
 
 @dataclass
 class Message:
     message_id: int
+    chat: Chat
     msg_from: MessageFrom = field(metadata={'data_key': 'from'})
-    chat: MessageChat
+    text: Optional[str]
     date: int
-    text: str | None
 
     class Meta:
-        unknown = EXCLUDE
+        unknown = marshmallow.EXCLUDE
 
 
 @dataclass
 class UpdateObj:
     update_id: int
-    message: Message
+    message: Optional[Message]
+    edited_message: Optional[Message]
 
     class Meta:
-        unknown = EXCLUDE
+        unknown = marshmallow.EXCLUDE
 
 
 @dataclass
@@ -60,7 +57,7 @@ class GetUpdatesResponse:
     result: List[UpdateObj]
 
     class Meta:
-        unknown = EXCLUDE
+        unknown = marshmallow.EXCLUDE
 
 
 @dataclass
@@ -69,7 +66,7 @@ class SendMessageResponse:
     result: Message
 
     class Meta:
-        unknown = EXCLUDE
+        unknown = marshmallow.EXCLUDE
 
 
 GET_UPDATES_RESPONSE_SCHEMA = marshmallow_dataclass.class_schema(GetUpdatesResponse)()

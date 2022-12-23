@@ -10,6 +10,7 @@ RUN pip install -r requirements.txt
 
 COPY core core
 COPY goals goals
+COPY bot bot
 COPY todolist todolist
 COPY manage.py .
 COPY README.md .

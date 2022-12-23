@@ -80,8 +80,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',  # new element
-                'social_django.context_processors.login_redirect',  # new element
             ],
         },
     },
@@ -106,7 +104,6 @@ DATABASES = {
 # REST_FRAMEWORK
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 # Password validation
@@ -162,11 +159,11 @@ AUTHENTICATION_BACKENDS = (
 AUTH_USER_MODEL = 'core.User'
 
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
 SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
 SOCIAL_AUTH_VK_OAUTH2_KEY = env.str('SOCIAL_AUTH_VK_OAUTH2_KEY')
 SOCIAL_AUTH_VK_OAUTH2_SECRET = env.str('SOCIAL_AUTH_VK_OAUTH2_SECRET')
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/logged-in/'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
 
-BOT_TOKEN = env.str('BOT_TOKEN')
+TELEGRAM_BOT_TOKEN = env.str('TELEGRAM_BOT_TOKEN')
