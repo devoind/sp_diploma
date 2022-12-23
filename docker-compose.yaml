@@ -35,14 +35,13 @@ services:
   bot:
     build:
       context: .
-    restart: always
+    env_file:
+      - .env
     depends_on:
       migrations:
         condition: service_completed_successfully
       db:
         condition: service_healthy
-    env_file:
-      - .env
     command: python manage.py runbot
 
   db:
@@ -51,7 +50,6 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    restart: always
     env_file:
       - .env
     ports:
@@ -64,7 +62,7 @@ services:
       timeout: 5s
       retries: 5
 
-volumes:
-  pg_data:
+#volumes:
+#  pg_data:
 
 
