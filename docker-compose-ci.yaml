@@ -51,7 +51,7 @@ services:
       SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
     command: >
-      sh -c "python3 manage.py runbot"
+      bash -c 'python3 manage.py runbot'
 
   migrations:
     image: devoind/sk_evedrov_diploma:$GITHUB_REF_NAME-$GITHUB_RUN_ID
@@ -71,7 +71,7 @@ services:
       db:
         condition: service_healthy
     command: >
-      sh -c "python3 manage.py migrate"
+      bash -c 'python3 manage.py makemigrations && python3 manage.py migrate'
 
   db:
     image: postgres:latest
