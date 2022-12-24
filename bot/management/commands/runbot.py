@@ -9,7 +9,7 @@ from goals.models import Goal, GoalCategory
 
 class Command(BaseCommand):
     help = "Runs Telegram bot"
-    tg_client = TgClient(settings.TELEGRAM_BOT_TOKEN)
+    tg_client = TgClient('5852232195:AAHn7KvStaoyPNDOqWROhp-vkXmh0aDfoNM')
     offset = 0
 
     def choose_category(self, msg: Message, tg_user: TgUser):
@@ -126,12 +126,11 @@ class Command(BaseCommand):
                      f"{tg_user.verification_code}\n\n"
                      f"на сайте skypro-evedrov.ga"
             )
+
         if msg.text == "/goals":
             self.get_goals(msg, tg_user)
-
         elif msg.text == "/create":
             self.choose_category(msg, tg_user)
-
         else:
             self.tg_client.send_message(
                 chat_id=msg.chat.id,
