@@ -9,7 +9,7 @@ from goals.models import Goal, GoalCategory
 
 class Command(BaseCommand):
     help = "Runs Telegram bot"
-    tg_client = TgClient('5852232195:AAHn7KvStaoyPNDOqWROhp-vkXmh0aDfoNM')
+    tg_client = TgClient(settings.TELEGRAM_BOT_TOKEN)
     offset = 0
 
     def choose_category(self, msg: Message, tg_user: TgUser):
