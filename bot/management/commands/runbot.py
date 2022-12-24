@@ -33,3 +33,4 @@ class Command(BaseCommand):
             for item in res.result:
                 offset = item.update_id + 1
                 self.handle_user(item.message)
+
