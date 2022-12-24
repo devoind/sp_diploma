@@ -16,8 +16,8 @@ class TgUser(models.Model):
                              verbose_name='Пользователь приложения')
     verification_code = models.CharField(max_length=15, unique=True, verbose_name='Код верификации')
 
-    # def generate_verification_code(self) -> str:
-    #     code = get_random_string(10)
-    #     self.verification_code = code
-    #     self.save()
-    #     return code
+    def generate_verification_code(self) -> str:
+        code = get_random_string(10)
+        self.verification_code = code
+        self.save()
+        return code
