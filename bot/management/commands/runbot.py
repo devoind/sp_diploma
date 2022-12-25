@@ -96,14 +96,13 @@ class Command(BaseCommand):
             goals_str: str = f'Ваши цели:'
             for goal in goals:
                 goals_str += f'\n\n{goal.title}\nприоритет: ' \
-                             f'{goal.Priority.choices[goal.priority - 1][1]}\nсрок: {goal.due_date}'
+                             f'{goal.Priority.choices[goal.priority-1][1]}\nсрок: {goal.due_date}'
         else:
             goals_str: str = f'У Вас нет целей'
 
         tg_client.send_message(chat_id=message.chat.id, text=goals_str)
 
-    def get_goal_categories(self, message: Message, tg_user: TgUser, tg_client: TgClient) -> Optional[
-        List[GoalCategory]]:
+    def get_goal_categories(self, message: Message, tg_user: TgUser, tg_client: TgClient) -> Optional[List[GoalCategory]]:
         goal_categories: Optional[List[GoalCategory]] = GoalCategory.objects.filter(
             board__participants__user__id=tg_user.user_id, is_deleted=False)
         if goal_categories:

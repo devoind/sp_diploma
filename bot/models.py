@@ -3,10 +3,6 @@ from django.db import models
 
 
 class TgUser(models.Model):
-    def __init__(self, *args, **kwargs):
-        super().__init__(args, kwargs)
-        self.user_id = None
-
     tg_chat_id = models.BigIntegerField()
     tg_user_id = models.BigIntegerField(unique=True)
     tg_username = models.CharField(max_length=32, validators=[MinLengthValidator(5)], null=True)
