@@ -1,9 +1,11 @@
 from __future__ import annotations
+
 from typing import List
-from marshmallow import EXCLUDE
 from dataclasses import field
+
 import marshmallow_dataclass
 from marshmallow_dataclass import dataclass
+from marshmallow import EXCLUDE
 
 
 @dataclass
@@ -24,7 +26,7 @@ class MessageChat:
     title: str | None
     first_name: str | None
     last_name: str | None
-    username: str = ""
+    username: str | None
     type: str
 
     class Meta:

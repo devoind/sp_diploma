@@ -133,7 +133,6 @@ class Command(BaseCommand):
             self.get_goals(msg, tg_user)
 
         elif msg.text == "/create":
-            self.offset += 1
             self.choose_category(msg, tg_user)
 
         else:
