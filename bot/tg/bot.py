@@ -172,3 +172,4 @@ class TgBot:
                     self.choice_category(user_tg=user_tg)
                 else:
                     self.tg_client.send_message(chat_id=item.message.chat.id, text="Неизвестная команда")
+
