@@ -1,22 +1,16 @@
 from rest_framework import serializers
 
 from bot.models import TgUser
-from bot.tg.client import TgClient
-from todolist.settings import TELEGRAM_BOT_TOKEN
+from bot.tg import tg_client
 
 
-class TgUserSerializer(serializers.ModelSerializer):
-    user_id = serializers.CurrentUserDefault
-    tg_id = serializers.IntegerField(source='tg_user_id')
-    username = serializers.CharField(source='tg_username')
-
+class TgUserVerCodSerializer(serializers.ModelSerializer):
     class Meta:
         model = TgUser
-        fields = ['tg_id', 'username', 'verification_code', 'user_id']
+        fields = '__all__'
+        read_only_fields = ('id', 'chat_id', 'user_ud')
 
     def update(self, instance, validated_data):
-        instance.user = self.context['request'].user
-        instance.save()
-        TgClient(token=TELEGRAM_BOT_TOKEN).send_message(chat_id=instance.tg_chat_id,
-                                                        text='Верификация прошла успешно')
+        instance = super().update(instance, validated_data)
+        tg_client.send_message(chat_id=instance.chat_id, text='Успешно')
         return instance
