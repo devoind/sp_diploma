@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from bot.models import TgUser
 from bot.tg.client import TgClient
 from bot.utils import generator_code_verification
