@@ -33,7 +33,7 @@ class Command(BaseCommand):
                     continue
 
                 # state B пользователь есть в базе, но не подтвержден
-                if tg_user.user_id is None:
+                if tg_user.tg_user_id is None:
                     verification_code: str = self.generate_verification_code()
                     self.update_tg_user_verification_code(item.message, tg_client, verification_code)
                     continue
@@ -91,7 +91,7 @@ class Command(BaseCommand):
 
     def get_goals(self, message: Message, tg_user: TgUser, tg_client: TgClient) -> None:
         goals: Optional[List[Goal]] = Goal.objects.filter(
-            category__board__participants__user__id=tg_user.user_id).exclude(status=Goal.Status.archived)
+            category__board__participants__user__id=tg_user.tg_user_id).exclude(status=Goal.Status.archived)
         if goals:
             goals_str: str = f'Ваши цели:'
             for goal in goals:
@@ -105,7 +105,7 @@ class Command(BaseCommand):
     def get_goal_categories(self, message: Message, tg_user: TgUser, tg_client: TgClient) -> Optional[
         List[GoalCategory]]:
         goal_categories: Optional[List[GoalCategory]] = GoalCategory.objects.filter(
-            board__participants__user__id=tg_user.user_id, is_deleted=False)
+            board__participants__user__id=tg_user.tg_user_id, is_deleted=False)
         if goal_categories:
             list_goal_categories: list = [goal_category.title for goal_category in goal_categories]
             goal_categories_str: str = f'Введите одну из категорий:\n' \
