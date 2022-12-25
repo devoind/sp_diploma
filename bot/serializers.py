@@ -12,7 +12,7 @@ class TgUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TgUser
-        fields = ('verification_code',)
+        fields = ['tg_id', 'username', 'verification_code', 'user_id']
 
     def update(self, instance, validated_data):
         instance.user = self.context['request'].user
