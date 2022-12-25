@@ -30,10 +30,6 @@ class GoalCategory(DatesModelMixin):
     title = models.CharField(max_length=255, verbose_name='Название')
     is_deleted = models.BooleanField(verbose_name='Удалена', default=False)
 
-    # def delete(self, using=None, keep_parents=False):
-    #     self.is_deleted = True
-    #     self.save()
-
 
 class Goal(DatesModelMixin):
     class Meta:
