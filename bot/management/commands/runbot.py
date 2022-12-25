@@ -1,33 +1,27 @@
-from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from bot.models import TgUser
 from bot.tg.client import TgClient
 from bot.tg.dc import Message
 from goals.models import Goal, GoalCategory
+from todolist.settings import TELEGRAM_BOT_TOKEN
 
 
 class Command(BaseCommand):
-    help = "Runs Telegram bot"
-    tg_client = TgClient(settings.TELEGRAM_BOT_TOKEN)
+    help = 'Runs Telegram bot'
+    tg_client = TgClient(token=TELEGRAM_BOT_TOKEN)
     offset = 0
-
-    # def choose_categories(self, msg: Message, tg_user: TgUser):
-    #     pass
 
     def choose_category(self, msg: Message, tg_user: TgUser):
         goal_categories = GoalCategory.objects.filter(
             board__participants__user=tg_user.user,
             is_deleted=False,
         )
-        goal_categories_srt = "\n".join(["🔹 " + goal.title for goal in goal_categories])
+        goal_categories_srt = "\n".join([goal.title for goal in goal_categories])
 
         self.tg_client.send_message(
             chat_id=msg.chat.id,
-            text=f"🏷 Выберите категорию:\n"
-                 f"=====================\n"
-                 f"{goal_categories_srt}\n"
-                 f"=====================\n"
+            text=f'Выберите категорию: {goal_categories_srt}'
         )
 
         # ожидание категории от пользователя
@@ -38,21 +32,21 @@ class Command(BaseCommand):
 
             for item in res.result:
                 self.offset = item.update_id + 1
-                if hasattr(item, "message"):
+                if hasattr(item, 'message'):
                     category = goal_categories.filter(title=msg.text)
                     if category:
                         self.create_goal(msg, tg_user, category)
                         is_running = False
-                    elif msg.text == "/cancel":
+                    elif msg.text == '/cancel':
                         self.tg_client.send_message(
                             chat_id=msg.chat.id,
-                            text="Действие отменено ☹!"
+                            text='Действие отменено!'
                         )
                         is_running = False
                     else:
                         self.tg_client.send_message(
                             chat_id=msg.chat.id,
-                            text=f"Категории с названием {msg.text} не существует ☹!"
+                            text=f'Категории с названием {msg.text} не существует!'
                         )
                         is_running = False
 
@@ -60,7 +54,7 @@ class Command(BaseCommand):
 
         self.tg_client.send_message(
             chat_id=msg.chat.id,
-            text="Введите название цели для ее создания!"
+            text='Введите название цели для ее создания!'
         )
 
         # ожидания цели от пользователя
@@ -71,10 +65,10 @@ class Command(BaseCommand):
 
             for item in res.result:
                 self.offset = item.update_id + 1
-                if item.message.text == "/cancel":
+                if item.message.text == '/cancel':
                     self.tg_client.send_message(
                         chat_id=msg.chat.id,
-                        text="Действие отменено ☹!"
+                        text='Действие отменено!'
                     )
                     is_running = False
                 else:
@@ -85,7 +79,7 @@ class Command(BaseCommand):
                     )
                     self.tg_client.send_message(
                         chat_id=msg.chat.id,
-                        text=f"Цель успешно {goal.title} добавлена👍!"
+                        text=f'Цель успешно {goal.title} добавлена!'
                     )
                     is_running = False
 
@@ -100,17 +94,14 @@ class Command(BaseCommand):
         if not goals:
             self.tg_client.send_message(
                 chat_id=msg.chat.id,
-                text=f"На сегодня целей нет")
+                text=f'На сегодня целей нет')
             return None
 
-        goals_str = "\n".join(["🔹 " + goal.title for goal in goals])
+        goals_str = '\n'.join([goal.title for goal in goals])
 
         self.tg_client.send_message(
             chat_id=msg.chat.id,
-            text=f"📌 Ваш список целей:\n"
-                 f"===================\n"
-                 f"{goals_str}:\n"
-                 f"===================\n"
+            text=f'Ваш список целей: {goals_str}'
         )
 
     def handle_message(self, msg: Message):
@@ -124,27 +115,20 @@ class Command(BaseCommand):
             tg_user.generate_verification_code()
             self.tg_client.send_message(
                 chat_id=msg.chat.id,
-                text=f"Для подтверждения аккаунта\n"
-                     f"введите код проверки:\n\n"
-                     f"{tg_user.verification_code}\n\n"
-                     f"на сайте pesaulov87.ga"
+                text=f'Для подтверждения аккаунта введите код проверки: {tg_user.verification_code} '
+                     f'на сайте skypro-evedrov.ga'
             )
-        if msg.text == "/goals":
+        if msg.text == '/goals':
             self.get_goals(msg, tg_user)
 
-        elif msg.text == "/create":
+        elif msg.text == '/create':
             self.choose_category(msg, tg_user)
 
         else:
             self.tg_client.send_message(
                 chat_id=msg.chat.id,
-                text=f"⛔ Вы ввели неизвестную команду ( ** {msg.text} ** )!"
+                text=f'Вы ввели неизвестную команду ( ** {msg.text} ** )!'
             )
-        # else:
-        #     self.tg_client.send_message(
-        #         chat_id=msg.chat.id,
-        #         text="Ваш аккаунт уже был подтвержден!"
-        #     )
 
     def handle(self, *args, **options):
         while True:
@@ -152,5 +136,5 @@ class Command(BaseCommand):
 
             for item in res.result:
                 self.offset = item.update_id + 1
-                if hasattr(item, "message"):
+                if hasattr(item, 'message'):
                     self.handle_message(item.message)
