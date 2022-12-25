@@ -3,12 +3,12 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
 from bot.models import TgUser
-from bot.serializers import TgUserSerializer
+from bot.serializers import BotVerifyCodeUpdateView
 
 
 class BotVerifyCodeUpdate(generics.UpdateAPIView):
     model = TgUser
-    serializer_class = TgUserSerializer
+    serializer_class = BotVerifyCodeUpdateView
     http_method_names = ['patch']
     permission_classes = [IsAuthenticated]
 
