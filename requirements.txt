@@ -11,4 +11,4 @@ tzdata==2022.7
 
 requests==2.28.1
 marshmallow==3.19.0
-marshmallow-dataclass==8.5.10
+marshmallow_dataclass==8.5.10

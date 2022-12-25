@@ -1,21 +1,22 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 
 from bot.models import TgUser
+from bot.tg.client import TgClient
+from todolist.settings import TELEGRAM_BOT_TOKEN
 
 
 class TgUserSerializer(serializers.ModelSerializer):
-    verification_code = serializers.CharField(write_only=True, max_length=16)
+    user_id = serializers.CurrentUserDefault
+    tg_id = serializers.IntegerField(source='tg_user_id')
+    username = serializers.CharField(source='tg_username')
 
     class Meta:
         model = TgUser
-        fields = ['tg_user_id', 'username', 'verification_code', 'user_id']
-        read_only_fields = ['tg_user_id', 'username']
+        fields = '__all__'
 
-    def validate(self, attrs):
-        verification_code = attrs.get('verification_code')
-        tg_user = TgUser.objects.filter(verification_code=verification_code).first()
-        if not tg_user:
-            raise ValidationError(detail={'verification_code': 'invalid'})
-        attrs['tg_user'] = tg_user
-        return attrs
+    def update(self, instance, validated_data):
+        instance.user = self.context['request'].user
+        instance.save()
+        TgClient(token=TELEGRAM_BOT_TOKEN).send_message(chat_id=instance.tg_chat_id,
+                                                        text='Верификация прошла успешно')
+        return instance

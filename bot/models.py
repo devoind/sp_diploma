@@ -1,26 +1,23 @@
-import secrets
-import string
-
 from django.db import models
+from django.core.validators import MinLengthValidator
+from django.utils.crypto import get_random_string
 
 
 class TgUser(models.Model):
-    tg_user_id = models.BigIntegerField(verbose_name='tg_id', unique=True)
-    tg_chat_id = models.BigIntegerField(verbose_name='tg_chat_id')
-    user = models.ForeignKey(verbose_name='internal user',
-                             to='core.User',
-                             on_delete=models.PROTECT,
-                             null=True,
-                             blank=True,
-                             default=None)
-    username = models.CharField(
-        verbose_name='tg_username', max_length=256, null=True, blank=True, default=None
-    )
+    class Meta:
+        verbose_name = 'Пользователь Telegram'
+        verbose_name_plural = 'Пользователи Telegram'
 
-    verification_code = models.CharField(verbose_name='verification code', max_length=16, null=True)
+    tg_chat_id = models.BigIntegerField(verbose_name='id чата')
+    tg_user_id = models.BigIntegerField(unique=True, verbose_name='id пользователя')
+    tg_username = models.CharField(max_length=32, validators=[MinLengthValidator(5)], null=True, blank=True,
+                                   verbose_name='Имя пользователя')
+    user = models.ForeignKey('core.User', null=True, blank=True, on_delete=models.CASCADE,
+                             verbose_name='Пользователь приложения')
+    verification_code = models.CharField(max_length=15, unique=True, verbose_name='Код верификации')
 
-    def generate_verification_code(self):
-        verification_code = ''.join(
-            secrets.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for x in range(16)
-        )
-        self.verification_code = verification_code
+    def generate_verification_code(self) -> str:
+        code = get_random_string(10)
+        self.verification_code = code
+        self.save()
+        return code
