@@ -1,32 +1,22 @@
 import requests
 
-from bot.tg import dc
+from bot.tg.dc import GetUpdatesResponse, SendMessageResponse
 
 
 class TgClient:
     def __init__(self, token):
         self.token = token
 
-    def get_url(self, method: str) -> str:
-        """
-        URL для запроса к Telegram боту через токен
-        """
-        return f'https://api.telegram.org/bot{self.token}/{method}'
+    def get_url(self, method: str):
+        return f"https://api.telegram.org/bot{self.token}/{method}"
 
-    def get_updates(self, offset: int = 0, timeout: int = 60) -> dc.GetUpdatesResponse:
-        """
-        Получение ботом исходящих сообщений от пользователя
-        """
+    def get_updates(self, offset: int = 0, timeout: int = 60) -> GetUpdatesResponse:
         url = self.get_url('getUpdates')
-        response = requests.get(url, params={'offset': offset, 'timeout': timeout})
-        print(response.json())
-        return dc.GET_UPDATES_RESPONSE_SCHEMA.load(response.json())
+        response = requests.get(url=url, params={'offset': offset, 'timeout': timeout})
+        return GetUpdatesResponse.Schema().load(response.json())
 
-    def send_message(self, chat_id: int, text: str) -> dc.SendMessageResponse:
-        """
-        Получение пользователем сообщений от бота
-        """
+    def send_message(self, chat_id: int, text: str) -> SendMessageResponse:
         url = self.get_url('sendMessage')
-        response = requests.get(url, params={'chat_id': chat_id, 'text': text})
-        print(response.json())
-        return dc.SEND_MESSAGE_RESPONSE_SCHEMA.load(response.json())
+        data = {'chat_id': chat_id, 'text': text}
+        response = requests.get(url=url, json=data)
+        return SendMessageResponse.Schema().load(response.json())

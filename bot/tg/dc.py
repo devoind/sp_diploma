@@ -1,33 +1,40 @@
-from __future__ import annotations
-
-from typing import List
 from dataclasses import field
+from typing import List, Optional
 
-import marshmallow_dataclass
+from marshmallow import EXCLUDE, Schema
 from marshmallow_dataclass import dataclass
-from marshmallow import EXCLUDE
+
+"""
+List of API used:
+    MessageFrom (User): https://core.telegram.org/bots/api#user
+    Chat: https://core.telegram.org/bots/api#chat
+    Message: https://core.telegram.org/bots/api#message
+    UpdateObj (Update): https://core.telegram.org/bots/api#update
+    GetUpdateResponse (getUpdates): https://core.telegram.org/bots/api#getupdates
+    SendMessageResponse (sendMessage): https://core.telegram.org/bots/api#sendmessage
+"""
 
 
 @dataclass
 class MessageFrom:
     id: int
     is_bot: bool
-    first_name: str | None
-    last_name: str | None
-    username: str
+    first_name: str
+    last_name: Optional[str]
+    username: Optional[str]
 
     class Meta:
         unknown = EXCLUDE
 
 
 @dataclass
-class MessageChat:
+class Chat:
     id: int
-    title: str | None
-    first_name: str | None
-    last_name: str | None
-    username: str | None
     type: str
+    title: Optional[str]
+    username: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
 
     class Meta:
         unknown = EXCLUDE
@@ -36,10 +43,9 @@ class MessageChat:
 @dataclass
 class Message:
     message_id: int
-    msg_from: MessageFrom = field(metadata={'data_key': 'from'})
-    chat: MessageChat
-    date: int
-    text: str | None
+    from_: MessageFrom = field(metadata={'data_key': 'from'})
+    chat: Chat
+    text: Optional[str] = None
 
     class Meta:
         unknown = EXCLUDE
@@ -59,6 +65,8 @@ class GetUpdatesResponse:
     ok: bool
     result: List[UpdateObj]
 
+    Schema = Schema
+
     class Meta:
         unknown = EXCLUDE
 
@@ -68,9 +76,7 @@ class SendMessageResponse:
     ok: bool
     result: Message
 
+    Schema = Schema
+
     class Meta:
         unknown = EXCLUDE
-
-
-GET_UPDATES_RESPONSE_SCHEMA = marshmallow_dataclass.class_schema(GetUpdatesResponse)()
-SEND_MESSAGE_RESPONSE_SCHEMA = marshmallow_dataclass.class_schema(SendMessageResponse)()
