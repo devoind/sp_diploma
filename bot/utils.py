@@ -8,7 +8,7 @@ def generator_code_verification() -> str:
     """
     letters = string.digits + string.ascii_lowercase + string.ascii_uppercase
     ver_cod = ""
-    for _ in range(25):
+    for _ in range(20):
         ver_cod += letters[random.randrange(0, len(letters))]
 
     return ver_cod
