@@ -91,16 +91,16 @@ WSGI_APPLICATION = 'todolist.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env.str('POSTGRES_DB'),
-        'USER': env.str('POSTGRES_USER'),
-        'PASSWORD': env.str('POSTGRES_PASSWORD'),
-        'HOST': env.str('POSTGRES_HOST'),
-        'PORT': env.str('POSTGRES_PORT'),
-    }
+    'default': env.db(),
 }
-# env.db(),
+#     {
+#     'ENGINE': 'django.db.backends.postgresql',
+#     'NAME': env.str('POSTGRES_DB'),
+#     'USER': env.str('POSTGRES_USER'),
+#     'PASSWORD': env.str('POSTGRES_PASSWORD'),
+#     'HOST': env.str('POSTGRES_HOST'),
+#     'PORT': env.str('POSTGRES_PORT'),
+# }
 
 # REST_FRAMEWORK
 REST_FRAMEWORK = {
