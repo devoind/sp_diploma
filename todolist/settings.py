@@ -91,16 +91,15 @@ WSGI_APPLICATION = 'todolist.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db(),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env.str('POSTGRES_DB'),
+        'USER': env.str('POSTGRES_USER'),
+        'PASSWORD': env.str('POSTGRES_PASSWORD'),
+        'HOST': env.str('POSTGRES_HOST'),
+        'PORT': env.str('POSTGRES_PORT'),
+    }
 }
-#     {
-#     'ENGINE': 'django.db.backends.postgresql',
-#     'NAME': env.str('POSTGRES_DB'),
-#     'USER': env.str('POSTGRES_USER'),
-#     'PASSWORD': env.str('POSTGRES_PASSWORD'),
-#     'HOST': env.str('POSTGRES_HOST'),
-#     'PORT': env.str('POSTGRES_PORT'),
-# }
 
 # REST_FRAMEWORK
 REST_FRAMEWORK = {
@@ -179,5 +178,6 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 )
+
 
 TELEGRAM_BOT_TOKEN = env.str('TELEGRAM_BOT_TOKEN')
