@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'social_django',
     'corsheaders',
-    'drf_spectacular',
     'django_filters',
 
     # create user
@@ -92,20 +91,21 @@ WSGI_APPLICATION = 'todolist.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env.str('POSTGRES_DB'),
-        'USER': env.str('POSTGRES_USER'),
-        'PASSWORD': env.str('POSTGRES_PASSWORD'),
-        'HOST': env.str('POSTGRES_HOST'),
-        'PORT': env.str('POSTGRES_PORT'),
-    }
+    'default': env.db(),
 }
+#     {
+#     'ENGINE': 'django.db.backends.postgresql',
+#     'NAME': env.str('POSTGRES_DB'),
+#     'USER': env.str('POSTGRES_USER'),
+#     'PASSWORD': env.str('POSTGRES_PASSWORD'),
+#     'HOST': env.str('POSTGRES_HOST'),
+#     'PORT': env.str('POSTGRES_PORT'),
+# }
 
 # REST_FRAMEWORK
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 # Password validation
@@ -129,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'ru-ru'
+LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
@@ -153,10 +153,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # Auth settings
 
-AUTHENTICATION_BACKENDS = (
+AUTHENTICATION_BACKENDS = [
     'social_core.backends.vk.VKOAuth2',
     'django.contrib.auth.backends.ModelBackend',
-)
+]
 
 AUTH_USER_MODEL = 'core.User'
 
@@ -167,5 +167,17 @@ SOCIAL_AUTH_VK_OAUTH2_KEY = env.str('SOCIAL_AUTH_VK_OAUTH2_KEY')
 SOCIAL_AUTH_VK_OAUTH2_SECRET = env.str('SOCIAL_AUTH_VK_OAUTH2_SECRET')
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/logged-in/'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.social_auth.associate_by_email',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
 
 TELEGRAM_BOT_TOKEN = env.str('TELEGRAM_BOT_TOKEN')

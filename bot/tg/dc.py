@@ -1,51 +1,45 @@
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Optional
 
-import marshmallow
 import marshmallow_dataclass
+from marshmallow import EXCLUDE
 
 
 @dataclass
 class MessageFrom:
     id: int
     is_bot: bool
-    first_name: str
-    username: str = ""
+    first_name: Optional[str]
+    last_name: Optional[str]
+    username: Optional[str]
 
     class Meta:
-        unknown = marshmallow.EXCLUDE
+        unknown = EXCLUDE
 
 
 @dataclass
 class Chat:
     id: int
-    first_name: str
     type: str
-    username: str = ""
+    first_name: Optional[str]
+    last_name: Optional[str]
+    username: Optional[str]
+    title: Optional[str]
 
     class Meta:
-        unknown = marshmallow.EXCLUDE
+        unknown = EXCLUDE
 
 
 @dataclass
 class Message:
     message_id: int
-    date: int
-    text: str
-    from_: MessageFrom = field(metadata={"data_key": "from"})
+    from_: MessageFrom = field(metadata={'data_key': 'from'})
     chat: Chat
+    date: int
+    text: Optional[str]
 
     class Meta:
-        unknown = marshmallow.EXCLUDE
-
-
-@dataclass
-class SendMessageResponse:
-    ok: bool
-    result: Message
-
-    class Meta:
-        unknown = marshmallow.EXCLUDE
+        unknown = EXCLUDE
 
 
 @dataclass
@@ -54,7 +48,7 @@ class UpdateObj:
     message: Message
 
     class Meta:
-        unknown = marshmallow.EXCLUDE
+        unknown = EXCLUDE
 
 
 @dataclass
@@ -63,8 +57,17 @@ class GetUpdatesResponse:
     result: List[UpdateObj]
 
     class Meta:
-        unknown = marshmallow.EXCLUDE
+        unknown = EXCLUDE
 
 
-get_updates_schema = marshmallow_dataclass.class_schema(GetUpdatesResponse)
-send_message_schema = marshmallow_dataclass.class_schema(SendMessageResponse)
+@dataclass
+class SendMessageResponse:
+    ok: bool
+    result: Message
+
+    class Meta:
+        unknown = EXCLUDE
+
+
+GET_UPDATES_SCHEMA = marshmallow_dataclass.class_schema(GetUpdatesResponse)()
+SEND_MESSAGE_SCHEMA = marshmallow_dataclass.class_schema(SendMessageResponse)()

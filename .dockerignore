@@ -1,0 +1,8 @@
+.env
+.env_example
+/venv
+.gitignore
+docker-compose.yaml
+docker-compose_ci.yaml
+Dockerfile
+README.md

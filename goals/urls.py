@@ -7,16 +7,16 @@ from goals.views import GoalCategoryCreateAPIView, GoalCategoryListAPIView, Goal
 urlpatterns = [
     path('goal_category/create', GoalCategoryCreateAPIView.as_view(), name='goal_category_create'),
     path('goal_category/list', GoalCategoryListAPIView.as_view(), name='goal_category_list'),
-    path('goal_category/<int:pk>', GoalCategoryDetailUpdateDeleteAPIView.as_view(), name='goal_category_pk'),
+    path('goal_category/<pk>', GoalCategoryDetailUpdateDeleteAPIView.as_view(), name='goal_category_pk'),
     path('goal/create', GoalCreateAPIView.as_view(), name='goal_create'),
     path('goal/list', GoalListAPIView.as_view(), name='goal_list'),
-    path('goal/<int:pk>', GoalDetailUpdateDeleteAPIView.as_view(), name='goal_detail_update_delete'),
+    path('goal/<pk>', GoalDetailUpdateDeleteAPIView.as_view(), name='goal_detail_update_delete'),
 
     path('goal_comment/create', GoalCommentCreateAPIView.as_view(), name='goal_comment_create'),
     path('goal_comment/list', GoalCommentListAPIView.as_view(), name='goal_comment_list'),
-    path('goal_comment/<int:pk>', GoalCommentDetailUpdateDeleteAPIView.as_view(), name='goal_comment_pk'),
+    path('goal_comment/<pk>', GoalCommentDetailUpdateDeleteAPIView.as_view(), name='goal_comment_pk'),
 
     path('board/create', BoardCreateAPIView.as_view(), name='board_create'),
     path('board/list', BoardListAPIView.as_view(), name='board_list'),
-    path('board/<int:pk>', BoardDetailUpdateDeleteAPIView.as_view(), name='board_detail_update_delete'),
+    path('board/<pk>', BoardDetailUpdateDeleteAPIView.as_view(), name='board_detail_update_delete'),
 ]

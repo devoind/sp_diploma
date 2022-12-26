@@ -1,23 +1,30 @@
-from rest_framework import generics
-from rest_framework.exceptions import ValidationError
+from django.conf import settings
+from django.shortcuts import render
+from rest_framework import status
+from rest_framework.generics import UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from bot.models import TgUser
-from bot.serializers import TgUserVerCodSerializer
+from bot.tg.client import TgClient
 
 
-class TgUserUpdate(generics.UpdateAPIView):
-    model = TgUser
-    serializer_class = TgUserVerCodSerializer
-    permission_classes = (IsAuthenticated,)
+class VerificationCodeView(UpdateAPIView):
+    queryset = TgUser.objects.all()
+    permission_classes = [IsAuthenticated]
 
-    def get_object(self):
+    def patch(self, request, *args, **kwargs):
+        ver_code = request.data.get('verification_code')
+
+        if not ver_code:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            user = self.model.objects.get(verification_code=self.request.data.get('verification_code'))
-        except self.model.DoesNotExist:
-            raise ValidationError({'verification_code': 'Неправильный верификационный код'})
+            tg_user = self.get_queryset().get(verification_code=ver_code)
+        except TgUser.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        return user
-
-    def perform_update(self, serializer):
-        serializer.save(user=self.request.user)
+        tg_user.user = self.request.user
+        tg_user.save()
+        TgClient(token=settings.TELEGRAM_BOT_TOKEN).send_message(tg_user.tg_chat_id, 'Вы верифицированы')
+        return Response(status=status.HTTP_200_OK)

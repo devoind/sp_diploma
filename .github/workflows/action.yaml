@@ -7,11 +7,11 @@ jobs:
       - name: clone code
         uses: actions/checkout@v3
       - name: docker build
-        run: docker build -t devoind/sk_evedrov_diploma:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/sk_evedrov_diploma:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
       - name: docker login
         run: echo ${{ secrets.DOCKER_TOKEN}} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
       - name: docker push
-        run: docker push devoind/sk_evedrov_diploma:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/sk_evedrov_diploma:$GITHUB_REF_NAME-$GITHUB_RUN_ID
 
   deploy:
     runs-on: ubuntu-latest
@@ -35,13 +35,14 @@ jobs:
         run: |
           mkdir deploy
           cat docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
+          cat .docker_env | envsubst > deploy/.env
       - name: copy files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          source: "deploy/docker-compose.yaml"
+          source: "deploy/docker-compose.yaml, deploy/.env"
           target: "todolist"
           strip_components: 1
       - name: deploy app
