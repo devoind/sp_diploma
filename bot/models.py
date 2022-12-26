@@ -15,7 +15,7 @@ class TgUser(models.Model):
         code = string.digits + string.ascii_letters
         verification_code = ''
 
-        for _ in range(6):
+        for _ in range(10):
             verification_code += code[random.randrange(0, len(code))]
 
         self.verification_code = verification_code
