@@ -22,5 +22,5 @@ class TgUser(models.Model):
         self.save()
 
     class Meta:
-        verbose_name = 'TG пользователь'
-        verbose_name_plural = 'TG пользователи'
+        verbose_name = 'Telegram пользователь'
+        verbose_name_plural = 'Telegram пользователи'
