@@ -21,7 +21,7 @@ class Command(BaseCommand):
             response = self.tg_client.get_updates(offset=self.offset)
             for item in response.result:
                 self.offset = item.update_id + 1
-                tg_user: TgUser | False = self.check_user(item.message)
+                tg_user: TgUser | True = self.check_user(item.message)
 
                 if not tg_user:
                     continue
