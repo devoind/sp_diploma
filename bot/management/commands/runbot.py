@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.tg_client = TgClient(settings.TG_BOT_API_TOKEN)
+        self.tg_client = TgClient(settings.TELEGRAM_BOT_TOKEN)
         self.offset = 0
 
     def handle(self, *args, **kwargs):
