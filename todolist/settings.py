@@ -104,7 +104,7 @@ DATABASES = {
 # REST_FRAMEWORK
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 # Password validation
@@ -168,5 +168,4 @@ SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/logged-in/'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
 
 
-TELEGRAM_BOT_TOKEN = '5497145709:AAHvXTinpMlV5yx8rj0oOUYO4jzL8Z5Yq60'
-
+TELEGRAM_BOT_TOKEN = env.str('TELEGRAM_BOT_TOKEN')
