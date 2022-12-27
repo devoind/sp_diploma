@@ -47,7 +47,7 @@ services:
   api:
     image: devoind/sk_evedrov_diploma:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     environment:
-      DEBUG: ${DEBUG}
+      DEBUG: False
       POSTGRES_HOST: 'db'
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
