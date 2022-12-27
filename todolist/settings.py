@@ -90,11 +90,11 @@ WSGI_APPLICATION = 'todolist.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env.str('POSTGRES_DB'),
-        'USER': env.str('POSTGRES_USER'),
-        'PASSWORD': env.str('POSTGRES_PASSWORD'),
-        'HOST': env.str('POSTGRES_HOST'),
-        'PORT': env.str('POSTGRES_PORT'),
+        'NAME': env('POSTGRES_DB'),
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD'),
+        'HOST': env('POSTGRES_HOST'),
+        'PORT': env('POSTGRES_PORT'),
     }
 }
 
@@ -176,4 +176,4 @@ SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
 #     'social_core.pipeline.user.user_details',
 # )
 
-TELEGRAM_BOT_TOKEN = env.str('TELEGRAM_BOT_TOKEN')
+TELEGRAM_BOT_TOKEN = env('TELEGRAM_BOT_TOKEN')
