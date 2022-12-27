@@ -3,23 +3,28 @@ from django.db import models
 import string
 import random
 
+from core.models import User
+
 
 class TgUser(models.Model):
-    tg_chat_id = models.BigIntegerField()
-    tg_user_id = models.BigIntegerField(unique=True)
-    user = models.ForeignKey('core.User', null=True, blank=True, verbose_name='Пользователь',
-                             on_delete=models.CASCADE)
-    verification_code = models.CharField(max_length=6, unique=True, null=True, blank=True)
+    tg_chat_id = models.BigIntegerField(verbose_name='TG CHAT_ID')
+    tg_user_id = models.BigIntegerField(unique=True, verbose_name='TG USER_ID')
+    user = models.ForeignKey(User, null=True, blank=True, verbose_name='Пользователь',
+                             on_delete=models.PROTECT)
+    verification_code = models.CharField(max_length=6, unique=True)
+    username = models.CharField(
+        max_length=255,
+        verbose_name='TG USERNAME',
+        null=True,
+        blank=True,
+        default=None
+    )
 
-    def set_verification_code(self):
-        code = string.digits + string.ascii_letters
-        verification_code = ''
-
-        for _ in range(10):
-            verification_code += code[random.randrange(0, len(code))]
-
-        self.verification_code = verification_code
-        self.save()
+    def set_verification_code(self) -> None:
+        length = 10  # Длина кода подтверждения
+        digits = string.digits
+        v_code = ''.join(random.sample(digits, length))
+        self.verification_code = v_code
 
     class Meta:
         verbose_name = 'Telegram пользователь'
