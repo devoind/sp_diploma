@@ -44,13 +44,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # create user
     'core',
+    'goals',
+    'bot',
     # third-party apps
     'rest_framework',
     'social_django',
     'corsheaders',
     'django_filters',
-    'goals',
-    'bot',
 ]
 
 MIDDLEWARE = [
