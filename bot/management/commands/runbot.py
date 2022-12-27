@@ -13,7 +13,7 @@ class Command(BaseCommand):
         super().__init__(*args, **kwargs)
         self.tg_client = TgClient(settings.TELEGRAM_BOT_TOKEN)
 
-    def verified_user(self, tg_user: TgUser, msg: Message) -> None:
+    def verified_user(self, tg_user: TgUser, msg: Message):
         if msg.text == '/goals':
             BotGoal(tg_user=tg_user, msg=msg, tg_client=self.tg_client).get_goal()
         elif msg.text == '/start':
@@ -34,7 +34,7 @@ class Command(BaseCommand):
                 text=f'Неизвестная команда!🤔'
             )
 
-    def add_user(self, msg: Message) -> None:
+    def add_user(self, msg: Message):
         tg_user, create = TgUser.objects.get_or_create(
             tg_user_id=msg.from_.id,
             tg_chat_id=msg.chat.id,
@@ -47,7 +47,7 @@ class Command(BaseCommand):
         else:
             BotGoal(tg_user=tg_user, msg=msg, tg_client=self.tg_client).check_user()
 
-    def handle(self, *args: str, **kwargs: int) -> None:
+    def handle(self, *args: str, **kwargs: int):
         offset = 0
 
         while True:

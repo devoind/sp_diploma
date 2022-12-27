@@ -33,16 +33,16 @@ class BotGoal:
                          f'Категория: {goal.category.title}'
                 )
 
-    def check_user(self) -> None:
+    def check_user(self):
         self.tg_user.set_verification_code()
         self.tg_user.save(update_fields=['verification_code'])
         self.tg_client.send_message(
             chat_id=self.msg.chat.id, text=f'Подтвердите, пожалуйста, свой аккаунт. '
                                            f'Для подтверждения необходимо ввести код: '
-                                           f'{self.tg_user.verification_code} на сайте: skotenkov.tk'
+                                           f'{self.tg_user.verification_code} на сайте: skypro-evedrov.ga'
         )
 
-    def create_goal(self) -> None:
+    def create_goal(self):
         line_break = '\n'
         categories = GoalCategory.objects.filter(user=self.tg_user.user)
         if '/create' == self.msg.text and categories.count() > 0:
