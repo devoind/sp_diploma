@@ -1,10 +1,10 @@
-from django.conf import settings
 from django.core.management import BaseCommand
 
 from bot.models import TgUser
 from bot.tg.client import TgClient
 from goals.models import GoalCategory
 from goals.models import Goal
+from todolist.settings import TELEGRAM_BOT_TOKEN
 
 
 class Command(BaseCommand):
@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.tg_client = TgClient(settings.TELEGRAM_BOT_TOKEN)
+        self.tg_client = TgClient(TELEGRAM_BOT_TOKEN)
         self.offset = 0
 
     def handle(self, *args, **kwargs):

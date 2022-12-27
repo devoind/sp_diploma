@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.generics import UpdateAPIView
@@ -7,6 +6,7 @@ from rest_framework.response import Response
 
 from bot.models import TgUser
 from bot.tg.client import TgClient
+from todolist.settings import TELEGRAM_BOT_TOKEN
 
 
 class VerificationCodeView(UpdateAPIView):
@@ -27,5 +27,5 @@ class VerificationCodeView(UpdateAPIView):
         tg_user.user = self.request.user
         tg_user.verification_code = None
         tg_user.save()
-        TgClient(token=settings.TELEGRAM_BOT_TOKEN).send_message(tg_user.tg_chat_id, 'Вы верифицированы')
+        TgClient(token=TELEGRAM_BOT_TOKEN).send_message(tg_user.tg_chat_id, 'Вы верифицированы')
         return Response(status=status.HTTP_200_OK)
