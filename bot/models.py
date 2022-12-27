@@ -17,7 +17,7 @@ class TgUser(models.Model):
         blank=True
     )
 
-    def set_verification_code(self):
+    def set_verification_code(self) -> None:
         length = 10  # Длина кода подтверждения
         digits = string.digits
         v_code = ''.join(random.sample(digits, length))

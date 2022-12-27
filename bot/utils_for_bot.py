@@ -44,7 +44,7 @@ class BotGoal:
 
     def create_goal(self) -> None:
         line_break = '\n'
-        categories = Category.objects.filter(user=self.tg_user.user)
+        categories = GoalCategory.objects.filter(user=self.tg_user.user)
         if '/create' == self.msg.text and categories.count() > 0:
             self.tg_client.send_message(
                 chat_id=self.msg.chat.id,
