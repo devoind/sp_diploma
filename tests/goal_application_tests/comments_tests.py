@@ -2,11 +2,15 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
+from rest_framework.test import APIClient
+
+from core.models import User
+from goals.models import Goal, BoardParticipant, GoalComment
 from goals.serializers import GoalCommentSerializer
 
 
 @pytest.mark.django_db
-def test_comment_create(auth_client, goal, board_participant):
+def test_comment_create(auth_client: APIClient, goal: Goal, board_participant: BoardParticipant) -> None:
     url = reverse('comment_create_goal')
     payload = {
         'text': 'Текст комментария',
@@ -21,7 +25,8 @@ def test_comment_create(auth_client, goal, board_participant):
 
 
 @pytest.mark.django_db
-def test_comment_detail(auth_client, test_user, goal_comment, board_participant):
+def test_comment_detail(auth_client: APIClient, test_user: User, goal_comment: GoalComment,
+                        board_participant: BoardParticipant) -> None:
     url = reverse('detail_update_delete_goal', kwargs={'pk': goal_comment.id})
     response = auth_client.get(url)
     response_data = response.json()
@@ -33,7 +38,8 @@ def test_comment_detail(auth_client, test_user, goal_comment, board_participant)
 
 
 @pytest.mark.django_db
-def test_comment_update(auth_client, test_user, goal_comment, board_participant):
+def test_comment_update(auth_client: APIClient, test_user: User, goal_comment: GoalComment,
+                        board_participant: BoardParticipant) -> None:
     url = reverse('detail_update_delete_goal', kwargs={'pk': goal_comment.id})
     payload = {
         'text': 'Текст комментария'
@@ -48,7 +54,8 @@ def test_comment_update(auth_client, test_user, goal_comment, board_participant)
 
 
 @pytest.mark.django_db
-def test_comment_delete(auth_client, goal_comment, board_participant):
+def test_comment_delete(auth_client: APIClient, goal_comment: GoalComment,
+                        board_participant: BoardParticipant) -> None:
     url = reverse('detail_update_delete_goal', kwargs={'pk': goal_comment.id})
     response = auth_client.delete(url)
 
@@ -56,7 +63,8 @@ def test_comment_delete(auth_client, goal_comment, board_participant):
 
 
 @pytest.mark.django_db
-def test_comment_list(auth_client, goal_comment_list, board_participant):
+def test_comment_list(auth_client: APIClient, goal_comment_list: GoalComment,
+                      board_participant: BoardParticipant) -> None:
     url = reverse('comment_list_goal') + '?ordering=created'
     expected_response = GoalCommentSerializer(goal_comment_list, many=True).data
     response = auth_client.get(path=url)
@@ -67,7 +75,8 @@ def test_comment_list(auth_client, goal_comment_list, board_participant):
 
 
 @pytest.mark.django_db
-def test_comment_list_limit(auth_client, goal_comment_list, board_participant):
+def test_comment_list_limit(auth_client: APIClient, goal_comment_list: GoalComment,
+                            board_participant: BoardParticipant) -> None:
     url = reverse('comment_list_goal') + '?ordering=created&limit=10'
     expected_response = GoalCommentSerializer(goal_comment_list, many=True).data
     response = auth_client.get(path=url)

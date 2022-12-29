@@ -4,11 +4,15 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
+from rest_framework.test import APIClient
+
+from core.models import User
+from goals.models import GoalCategory, BoardParticipant, Goal
 from goals.serializers import GoalSerializer
 
 
 @pytest.mark.django_db
-def test_create_goal(auth_client, category, board_participant):
+def test_create_goal(auth_client: APIClient, category: GoalCategory, board_participant: BoardParticipant) -> None:
     url = reverse('create_goal')
     test_date = str(datetime.now().date())
     payload = {
@@ -31,7 +35,7 @@ def test_create_goal(auth_client, category, board_participant):
 
 
 @pytest.mark.django_db
-def test_goal_detail(auth_client, goal, test_user, board_participant):
+def test_goal_detail(auth_client: APIClient, goal: Goal, test_user: User, board_participant: BoardParticipant) -> None:
     url = reverse('detail_update_delete_goal', kwargs={'pk': goal.id})
     response = auth_client.get(path=url)
     response_data = response.json()
@@ -44,7 +48,8 @@ def test_goal_detail(auth_client, goal, test_user, board_participant):
 
 
 @pytest.mark.django_db
-def test_goal_update(auth_client, goal, test_user, goal_category, board_participant):
+def test_goal_update(auth_client: APIClient, goal: Goal, test_user: User, goal_category: GoalCategory,
+                     board_participant: BoardParticipant) -> None:
     url = reverse('detail_update_delete_goal', kwargs={'pk': goal.id})
     test_date = str(datetime.now().date())
     payload = {
@@ -65,7 +70,7 @@ def test_goal_update(auth_client, goal, test_user, goal_category, board_particip
 
 
 @pytest.mark.django_db
-def test_goal_delete(auth_client, goal, board_participant):
+def test_goal_delete(auth_client: APIClient, goal: Goal, test_user: User, board_participant: BoardParticipant) -> None:
     url = reverse('detail_update_delete_goal', kwargs={'pk': goal.id})
     response = auth_client.delete(path=url)
 
@@ -73,7 +78,7 @@ def test_goal_delete(auth_client, goal, board_participant):
 
 
 @pytest.mark.django_db
-def test_goal_list(auth_client, goal_list, board_participant):
+def test_goal_list(auth_client: APIClient, goal_list: Goal, board_participant: BoardParticipant) -> None:
     url = reverse('list_goal')
 
     response = auth_client.get(path=url)
@@ -84,7 +89,7 @@ def test_goal_list(auth_client, goal_list, board_participant):
 
 
 @pytest.mark.django_db
-def test_goal_list_limit(auth_client, goal_list, board_participant):
+def test_goal_list_limit(auth_client: APIClient, goal_list: Goal, board_participant: BoardParticipant) -> None:
     url = reverse('list_goal') + '?limit=10'
 
     response = auth_client.get(path=url)

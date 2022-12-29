@@ -4,12 +4,14 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
+from rest_framework.test import APIClient
+from core.models import User
 from goals.serializers import BoardSerializers, BoardListSerializer
-from goals.models import BoardParticipant
+from goals.models import BoardParticipant, Board
 
 
 @pytest.mark.django_db
-def test_board_create(auth_client):
+def test_board_create(auth_client: APIClient) -> None:
     url = reverse('create_board')
     payload = {
         'title': 'Название доски',
@@ -24,7 +26,8 @@ def test_board_create(auth_client):
 
 
 @pytest.mark.django_db
-def test_board_detail(auth_client, test_user, board, board_participant):
+def test_board_detail(auth_client: APIClient, test_user: User, board: Board,
+                      board_participant: BoardParticipant) -> None:
     url = reverse('detail_update_delete_board', kwargs={'pk': board.id})
     response = auth_client.get(url)
     response_data = response.json()
@@ -35,7 +38,8 @@ def test_board_detail(auth_client, test_user, board, board_participant):
 
 
 @pytest.mark.django_db
-def test_board_update(auth_client, test_user, board, board_participant):
+def test_board_update(auth_client: APIClient, test_user: User, board: Board,
+                      board_participant: BoardParticipant) -> None:
     url = reverse('detail_update_delete_board', kwargs={'pk': board.id})
     payload = {
         'participants': [],
@@ -51,7 +55,8 @@ def test_board_update(auth_client, test_user, board, board_participant):
 
 
 @pytest.mark.django_db
-def test_board_delete(auth_client, test_user, board, board_participant):
+def test_board_delete(auth_client: APIClient, test_user: User, board: Board,
+                      board_participant: BoardParticipant) -> None:
     url = reverse('detail_update_delete_board', kwargs={'pk': board.id})
     response = auth_client.delete(url)
 
@@ -59,7 +64,7 @@ def test_board_delete(auth_client, test_user, board, board_participant):
 
 
 @pytest.mark.django_db
-def test_board_list(auth_client, test_user, board_list):
+def test_board_list(auth_client: APIClient, test_user: User, board_list: Board) -> None:
     board_participant = []
     for board_ in board_list:
         board_participant.append(BoardParticipant.objects.create(board=board_, user=test_user))
@@ -73,7 +78,7 @@ def test_board_list(auth_client, test_user, board_list):
 
 
 @pytest.mark.django_db
-def test_board_list_limit(auth_client, test_user, board_list):
+def test_board_list_limit(auth_client: APIClient, test_user: User, board_list: Board) -> None:
     board_participant = []
     for board_ in board_list:
         board_participant.append(BoardParticipant.objects.create(board=board_, user=test_user))

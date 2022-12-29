@@ -2,11 +2,16 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
+from rest_framework.test import APIClient
+
+from core.models import User
+from goals.models import Board, BoardParticipant, GoalCategory
 from goals.serializers import GoalCategorySerializer
 
 
 @pytest.mark.django_db
-def test_create_category(auth_client, test_user, board, board_participant):
+def test_create_category(auth_client: APIClient, test_user: User, board: Board,
+                         board_participant: BoardParticipant) -> None:
     url = reverse('category_goal_create')
     payload = {
         'user': test_user.pk,
@@ -28,7 +33,8 @@ def test_create_category(auth_client, test_user, board, board_participant):
 
 
 @pytest.mark.django_db
-def test_category_detail(auth_client, test_user, goal_category, board_participant):
+def test_category_detail(auth_client: APIClient, test_user: User, goal_category: GoalCategory,
+                         board_participant: BoardParticipant) -> None:
     url = reverse('detail_update_delete_goal_category', kwargs={'pk': goal_category.id})
     response = auth_client.get(path=url)
     response_data = response.json()
@@ -40,7 +46,8 @@ def test_category_detail(auth_client, test_user, goal_category, board_participan
 
 
 @pytest.mark.django_db
-def test_category_update(auth_client, test_user, goal_category, board_participant):
+def test_category_update(auth_client: APIClient, test_user: User, goal_category: GoalCategory,
+                         board_participant: BoardParticipant) -> None:
     url = reverse('detail_update_delete_goal_category', kwargs={'pk': goal_category.id})
     payload = {
         'title': 'Обновленная категория',
@@ -57,7 +64,8 @@ def test_category_update(auth_client, test_user, goal_category, board_participan
 
 
 @pytest.mark.django_db
-def test_category_delete(auth_client, goal_category, board_participant):
+def test_category_delete(auth_client: APIClient, goal_category: GoalCategory,
+                         board_participant: BoardParticipant) -> None:
     url = reverse('detail_update_delete_goal_category', kwargs={'pk': goal_category.id})
 
     response = auth_client.delete(path=url)
@@ -66,7 +74,8 @@ def test_category_delete(auth_client, goal_category, board_participant):
 
 
 @pytest.mark.django_db
-def test_category_list(auth_client, goal_category_list, board_participant):
+def test_category_list(auth_client: APIClient, goal_category_list: GoalCategory,
+                       board_participant: BoardParticipant) -> None:
     url = reverse('category_goal_list')
 
     response = auth_client.get(path=url)
@@ -77,7 +86,8 @@ def test_category_list(auth_client, goal_category_list, board_participant):
 
 
 @pytest.mark.django_db
-def test_category_list_limit(auth_client, goal_category_list, board_participant):
+def test_category_list_limit(auth_client: APIClient, goal_category_list: GoalCategory,
+                             board_participant: BoardParticipant) -> None:
     url = reverse('category_goal_list') + '?limit=10'
 
     response = auth_client.get(path=url)
