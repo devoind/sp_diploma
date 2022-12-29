@@ -11,6 +11,9 @@ from goals.serializers import GoalCategoryCreateSerializer, GoalCategorySerializ
 
 
 class GoalCategoryCreateAPIView(generics.CreateAPIView):
+    """
+    Создание категории для целей
+    """
     model = GoalCategory
     serializer_class = GoalCategoryCreateSerializer
     permission_classes = [permissions.IsAuthenticated, GoalCategoryPermission]
