@@ -27,17 +27,9 @@ class BoardParticipantFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = BoardParticipant
 
-    user = factory.SubFactory(UserFactory)
-
 
 class GoalCategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = GoalCategory
 
     title = factory.Faker('name')
-    board = factory.SubFactory(BoardFactory)
-    user = factory.SubFactory(UserFactory)
-
-# user = UserFactory.create()
-# category = GoalCategoryFactory.create()
-# board = BoardFactory.create()
