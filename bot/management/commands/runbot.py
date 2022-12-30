@@ -114,13 +114,11 @@ class Command(BaseCommand):
                     self.tg_client.send_message(chat_id=item.message.chat.id, text='Cоздание цели прервано')
                     return
                 else:
-                    due_date = datetime.date.today() + datetime.timedelta(days=14)
                     goal = Goal.objects.create(
                         category=category,
                         user=tg_user.user,
                         title=item.message.text,
                         description='Цель создана в Telegram',
-                        due_date=due_date.strftime('%Y-%m-%d')
                     )
                     self.tg_client.send_message(
                         chat_id=item.message.chat.id, text=f'Цель [{goal.title}] успешно создана')
