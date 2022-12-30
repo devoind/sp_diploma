@@ -18,7 +18,7 @@ from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name='admin_site'),
     path('core/', include('core.urls'), name='core'),
     path('oauth/', include('social_django.urls', namespace='social')),
     path('goals/', include('goals.urls'), name='goals'),

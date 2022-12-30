@@ -13,7 +13,7 @@ class TgUser(models.Model):
     tg_username = models.CharField(max_length=32, validators=[MinLengthValidator(5)], null=True, blank=True,
                                    verbose_name="Имя пользователя")
 
-    def set_verification_code(self):
+    def set_verification_code(self) -> None:
         code = string.digits + string.ascii_letters
         verification_code = ''
 

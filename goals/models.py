@@ -52,13 +52,18 @@ class Goal(DatesModelMixin):
     description = models.TextField(verbose_name='Описание')
     due_date = models.DateField(verbose_name='Дата исполнения')
     user = models.ForeignKey('core.User', verbose_name='Пользователь', on_delete=models.PROTECT)
-    category = models.ForeignKey(
-        'goals.GoalCategory', related_name='goals', verbose_name='Категория', on_delete=models.CASCADE
-    )
-    priority = models.PositiveSmallIntegerField(
-        choices=Priority.choices, default=Priority.low, verbose_name='Приоритет'
-    )
     status = models.PositiveSmallIntegerField(choices=Status.choices, default=Status.to_do, verbose_name='Статус')
+    priority = models.PositiveSmallIntegerField(
+        choices=Priority.choices,
+        default=Priority.low,
+        verbose_name='Приоритет',
+    )
+    category = models.ForeignKey(
+        'goals.GoalCategory',
+        related_name='goals',
+        verbose_name='Категория',
+        on_delete=models.CASCADE,
+    )
 
 
 class GoalComment(DatesModelMixin):
@@ -68,8 +73,7 @@ class GoalComment(DatesModelMixin):
 
     text = models.TextField(verbose_name='Текст')
     goal = models.ForeignKey('goals.Goal', on_delete=models.PROTECT)
-    user = models.ForeignKey('core.User', verbose_name='Пользователь',
-                             on_delete=models.PROTECT)
+    user = models.ForeignKey('core.User', verbose_name='Пользователь', on_delete=models.PROTECT)
 
 
 class BoardParticipant(DatesModelMixin):
@@ -84,7 +88,10 @@ class BoardParticipant(DatesModelMixin):
         reader = 3, 'Читатель'
 
     board = models.ForeignKey(Board, verbose_name='Доска', on_delete=models.PROTECT, related_name='participants')
-    user = models.ForeignKey(
-        'core.User', verbose_name='Пользователь', on_delete=models.PROTECT, related_name='participants'
-    )
     role = models.PositiveSmallIntegerField(verbose_name='Роль', choices=Role.choices, default=Role.owner)
+    user = models.ForeignKey(
+        'core.User',
+        verbose_name='Пользователь',
+        on_delete=models.PROTECT,
+        related_name='participants',
+    )

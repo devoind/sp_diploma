@@ -6,12 +6,12 @@ from goals.models import GoalCategory, Goal, GoalComment, Board, BoardParticipan
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email']
 
 
+# Categories' serializers
 class GoalCategoryCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
@@ -19,6 +19,19 @@ class GoalCategoryCreateSerializer(serializers.ModelSerializer):
         model = GoalCategory
         read_only_fields = ('id', 'created', 'updated', 'user')
         fields = '__all__'
+
+    def validate_board(self, value: Board) -> Board:
+        """Проверка на валидность пользователя (владелец или редактор) и на существование доски"""
+        if value.is_deleted:
+            raise serializers.ValidationError('Проект был удален! Никакие действия не возможны!')
+        allow = BoardParticipant.objects.filter(
+            board=value,
+            role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
+            user=self.context['request'].user,
+        ).exists()
+        if not allow:
+            raise serializers.ValidationError('Пользователь должен быть владельцем или редактором!')
+        return value
 
 
 class GoalCategorySerializer(serializers.ModelSerializer):
@@ -30,6 +43,7 @@ class GoalCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# Goal's serializers
 class GoalCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
@@ -38,7 +52,8 @@ class GoalCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'created', 'updated', 'user')
         fields = '__all__'
 
-    def validate_category(self, value):
+    def validate_category(self, value: GoalCategory) -> GoalCategory:
+        """Проверка на валидность категории (удалена или нет), к которой принадлежит цель"""
         if value.is_deleted:
             raise serializers.ValidationError('not allowed in deleted category')
         else:
@@ -53,13 +68,24 @@ class GoalSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# Comment's serializers
 class GoalCommentCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = GoalComment
-        read_only_fields = ('id', 'created', 'updated', 'user')
-        fields = '__all__'
+        read_only_fields = ("id", "created", "updated", "user")
+        fields = "__all__"
+
+    def validate_goal(self, value: Goal) -> Goal:
+        """Проверка на валидность роли пользователя (владелец или редактор)"""
+        if not BoardParticipant.objects.filter(
+                board_id=value.category.board_id,
+                role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
+                user=self.context['request'].user,
+        ).exists():
+            raise serializers.ValidationError('Пользователь должен быть владельцем или редактором!')
+        return value
 
 
 class GoalCommentSerializer(serializers.ModelSerializer):
@@ -72,6 +98,7 @@ class GoalCommentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# Board's serializers
 class BoardCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
@@ -80,7 +107,8 @@ class BoardCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'created', 'updated', 'user')
         fields = '__all__'
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict) -> Board:
+        """Создание доски пользователем, который по default является ее владельцем"""
         user = validated_data.pop('user')
         board = Board.objects.create(**validated_data)
         BoardParticipant.objects.create(
@@ -119,7 +147,7 @@ class BoardSerializers(serializers.ModelSerializer):
         read_only_fields = ('id', 'created', 'updated', 'board')
         fields = '__all__'
 
-    def update(self, instance, validated_data):
+    def update(self, instance, validated_data: dict) -> Board:
         owner = validated_data.pop('user')
         new_participants = validated_data.pop('participants')
         new_by_id = {part['user'].id: part for part in new_participants}

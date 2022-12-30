@@ -1,3 +1,4 @@
+from django.contrib.sites import requests
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.generics import UpdateAPIView
@@ -13,7 +14,7 @@ class VerificationCodeView(UpdateAPIView):
     queryset = TgUser.objects.all()
     permission_classes = [IsAuthenticated]
 
-    def patch(self, request, *args, **kwargs):
+    def patch(self, request: requests, *args: str, **kwargs: int) -> Response:
         ver_code = request.data.get('verification_code')
 
         if not ver_code:

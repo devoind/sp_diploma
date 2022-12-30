@@ -11,15 +11,14 @@ from goals.serializers import GoalCategoryCreateSerializer, GoalCategorySerializ
 
 
 class GoalCategoryCreateAPIView(generics.CreateAPIView):
-    """
-    Создание категории для целей
-    """
+    """Класс создания категорий для Целей"""
     model = GoalCategory
     serializer_class = GoalCategoryCreateSerializer
     permission_classes = [permissions.IsAuthenticated, GoalCategoryPermission]
 
 
 class GoalCategoryListAPIView(generics.ListAPIView):
+    """Класс отображения списка Категорий"""
     model = GoalCategory
     serializer_class = GoalCategorySerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -34,9 +33,9 @@ class GoalCategoryListAPIView(generics.ListAPIView):
     ]
     filterset_class = GoalCategoryFilter
 
-    def get_queryset(self):
-        return GoalCategory.objects.filter(
-            board__participants__user=self.request.user, is_deleted=False)
+    def get_queryset(self) -> GoalCategory:
+        """Переопределенное значение при использовании фильтров для поиска значений"""
+        return GoalCategory.objects.filter(board__participants__user=self.request.user, is_deleted=False)
 
 
 class GoalCategoryDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -44,11 +43,11 @@ class GoalCategoryDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIVie
     serializer_class = GoalCategorySerializer
     permission_classes = [permissions.IsAuthenticated, GoalCategoryPermission]
 
-    def get_queryset(self):
+    def get_queryset(self) -> GoalCategory:
         return GoalCategory.objects.filter(
             board__participants__user=self.request.user, is_deleted=False)
 
-    def perform_destroy(self, instance):
+    def perform_destroy(self, instance: GoalCategory) -> GoalCategory:
         with transaction.atomic():
             instance.is_deleted = True
             instance.save()
@@ -60,12 +59,14 @@ class GoalCategoryDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIVie
 
 
 class GoalCreateAPIView(generics.CreateAPIView):
+    """Класс создания Целей, с использованием модели целей (model)"""
     model = Goal
     serializer_class = GoalCreateSerializer
     permission_classes = [permissions.IsAuthenticated, GoalPermission]
 
 
 class GoalListAPIView(generics.ListAPIView):
+    """Класс отображения списка Целей, с использованием модели целей (model)"""
     model = Goal
     serializer_class = GoalSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -81,33 +82,43 @@ class GoalListAPIView(generics.ListAPIView):
     ]
     filterset_class = GoalFilter
 
-    def get_queryset(self):
+    def get_queryset(self) -> Goal:
+        """Переопределенное значение при использовании фильтров для поиска значений"""
         return Goal.objects.filter(category__board__participants__user=self.request.user).exclude(
             status=Goal.Status.archived)
 
 
 class GoalDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
+    """Класс отображения/изменения/удаления списка Категорий"""
     model = Goal
     serializer_class = GoalSerializer
     permission_classes = [permissions.IsAuthenticated, GoalPermission]
 
-    def get_queryset(self):
+    def get_queryset(self) -> Goal:
+        """Переопределенное значение при использовании фильтров для поиска значений"""
         return Goal.objects.filter(category__board__participants__user=self.request.user
                                    ).exclude(status=Goal.Status.archived)
 
-    def perform_destroy(self, instance):
+    def perform_destroy(self, instance: Goal) -> Goal:
+        """Удаление экземпляра объекта - Категории"""
         instance.status = Goal.Status.archived
         instance.save()
         return instance
 
 
 class GoalCommentCreateAPIView(generics.CreateAPIView):
+    """Класс создания Комментариев к Целям"""
     model = GoalComment
     serializer_class = GoalCommentCreateSerializer
     permission_classes = [permissions.IsAuthenticated, GoalCommentPermission]
 
+    def perform_create(self, serializer: GoalCommentCreateSerializer):
+        """Для сохранения нового экземпляра объекта (комментария)"""
+        serializer.save(goal_id=self.request.data['goal'])
+
 
 class GoalCommentListAPIView(generics.ListAPIView):
+    """Класс отображения списка Комментариев к Целям"""
     model = GoalComment
     serializer_class = GoalCommentSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -122,43 +133,53 @@ class GoalCommentListAPIView(generics.ListAPIView):
     ]
     filterset_class = GoalCommentFilter
 
-    def get_queryset(self):
+    def get_queryset(self) -> GoalComment:
+        """Переопределенное значение при использовании фильтров для поиска значений"""
         return GoalComment.objects.filter(goal__category__board__participants__user=self.request.user)
 
 
 class GoalCommentDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
+    """Класс отображения/изменения/удаления списка Комментариев к Целям"""
     model = GoalComment
     serializer_class = GoalCommentSerializer
     permission_classes = [permissions.IsAuthenticated, GoalCommentPermission]
 
-    def get_queryset(self):
+    def get_queryset(self) -> GoalComment:
+        """Переопределенное значение при использовании фильтров для поиска значений"""
         return GoalComment.objects.filter(goal__category__board__participants__user=self.request.user)
 
 
+# Board's views
 class BoardCreateAPIView(generics.CreateAPIView):
+    """Класс создания Досок"""
     model = Board
     serializer_class = BoardCreateSerializer
     permission_classes = [permissions.IsAuthenticated, BoardPermissions]
 
 
 class BoardListAPIView(generics.ListAPIView):
+    """Класс отображения списка Досок"""
     model = Board
     serializer_class = BoardListSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
+    def get_queryset(self) -> Board:
+        """Переопределенное значение при использовании фильтров для поиска значений"""
         return Board.objects.filter(participants__user=self.request.user, is_deleted=False)
 
 
 class BoardDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
+    """Класс отображения/изменения/удаления списка Досок"""
     model = Board
     serializer_class = BoardSerializers
     permission_classes = [permissions.IsAuthenticated, BoardPermissions]
 
-    def get_queryset(self):
+    def get_queryset(self) -> Board:
+        """Переопределенное значение при использовании фильтров для поиска значений"""
         return Board.objects.filter(participants__user=self.request.user, is_deleted=False)
 
-    def perform_destroy(self, instance: Board):
+    def perform_destroy(self, instance):
+        """Класс отображения/изменения/удаления списка Досок"""
         with transaction.atomic():
             instance.is_deleted = True
             instance.save()

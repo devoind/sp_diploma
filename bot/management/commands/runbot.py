@@ -2,20 +2,21 @@ from django.core.management import BaseCommand
 
 from bot.models import TgUser
 from bot.tg.client import TgClient
+from bot.tg.dc import Message
 from goals.models import GoalCategory
 from goals.models import Goal
 from todolist.settings import TELEGRAM_BOT_TOKEN
 
 
 class Command(BaseCommand):
-    help = 'Run Telegram Bot'
+    help = 'Run Telegram-Bot'
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: str, **kwargs: int):
         super().__init__(*args, **kwargs)
         self.tg_client = TgClient(TELEGRAM_BOT_TOKEN)
         self.offset = 0
 
-    def handle(self, *args, **kwargs):
+    def handle(self, *args: str, **kwargs: int):
 
         while True:
             response = self.tg_client.get_updates(offset=self.offset)
@@ -35,7 +36,8 @@ class Command(BaseCommand):
                                                                     'Для создания задачи введи /create.\n'
                                                                     'Для отмены введи /cancel')
 
-    def check_user(self, message):
+    def check_user(self, message: Message):
+        """Проверка, есть ли пользователь в Telegram-Bot"""
         tg_user, created = TgUser.objects.get_or_create(tg_chat_id=message.chat.id, tg_user_id=message.from_.id)
 
         if created or not tg_user.user:
@@ -47,7 +49,8 @@ class Command(BaseCommand):
             return False
         return tg_user
 
-    def get_goals(self, tg_user):
+    def get_goals(self, tg_user: TgUser):
+        """Получение всех целей пользователя в Telegram-Bot"""
         goals = Goal.objects.filter(user=tg_user.user, status__in=[1, 2, 3])
 
         if goals.count() > 0:
@@ -59,7 +62,8 @@ class Command(BaseCommand):
         else:
             self.tg_client.send_message(tg_user.tg_chat_id, 'Нет задач')
 
-    def choice_category(self, tg_user):
+    def choice_category(self, tg_user: TgUser):
+        """Выбор категории для цели в Telegram-Bot"""
         categories = GoalCategory.objects.filter(board__participants__user=tg_user.user, is_deleted=False)
         self.tg_client.send_message(tg_user.tg_chat_id,
                                     f'Выбери категорию: {[category.title for category in categories]}\n'
@@ -81,7 +85,8 @@ class Command(BaseCommand):
                 else:
                     self.tg_client.send_message(tg_user.tg_chat_id, 'Категория не существует')
 
-    def create_goal(self, tg_user, category):
+    def create_goal(self, tg_user: TgUser, category: GoalCategory):
+        """Создание новой цели через Telegram-Bot"""
         self.tg_client.send_message(tg_user.tg_chat_id, 'Укажите название задачи. Для отмены введи /cancel')
 
         flag = True
@@ -94,4 +99,3 @@ class Command(BaseCommand):
                 else:
                     goal = Goal(title=item.message.text, category=category, user=tg_user.user)
                     goal.save()
-
