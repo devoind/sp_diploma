@@ -39,7 +39,7 @@ class BotGoal:
         self.tg_client.send_message(
             chat_id=self.msg.chat.id, text=f'Подтвердите, пожалуйста, свой аккаунт. '
                                            f'Для подтверждения необходимо ввести код: '
-                                           f'{self.tg_user.verification_code} на сайте: skotenkov.tk'
+                                           f'{self.tg_user.verification_code} на сайте: skypro-evedrov.ga'
         )
 
     def create_goal(self) -> None:
