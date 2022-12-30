@@ -100,9 +100,9 @@ class Command(BaseCommand):
     #                 goal = Goal(title=item.message.text, category=category, user=tg_user.user)
     #                 goal.save()
 
-    def create_goal(self, category: GoalCategory, user_tg: TgUser) -> None:
+    def create_goal(self, category: GoalCategory, tg_user: TgUser):
         """Создание новой цели через Telegram-Bot"""
-        self.tg_client.send_message(chat_id=user_tg.chat_id, text=f'Введите заголовок цели')
+        self.tg_client.send_message(chat_id=tg_user.chat_id, text=f'Введите заголовок цели')
 
         flag = True
         while flag:
@@ -111,13 +111,13 @@ class Command(BaseCommand):
                 self.offset = item.update_id + 1
 
                 if item.message.text == '/cancel':
-                    self.tg_client.send_message(chat_id=user_tg.chat_id, text='Операция отменена')
+                    self.tg_client.send_message(chat_id=tg_user.chat_id, text='Операция отменена')
                     flag = False
 
                 else:
-                    goal = Goal.objects.create(category=category, user=user_tg.user, title=item.message.text)
+                    goal = Goal.objects.create(category=category, user=tg_user.user, title=item.message.text)
                     self.tg_client.send_message(
-                        chat_id=user_tg.chat_id,
+                        chat_id=tg_user.chat_id,
                         text=f'Цель создана\n'
                              f'{goal.title}\n'
                              f'{goal.category}'
