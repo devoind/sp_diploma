@@ -87,13 +87,13 @@ class Command(BaseCommand):
 
     def create_goal(self, tg_user, category):
         self.tg_client.send_message(tg_user.tg_chat_id, 'Укажи название задачи. \n'
-                                                        'Для отмены введи /cancle')
+                                                        'Для отмены введи /cancel')
 
         response = self.tg_client.get_updates(offset=self.offset)
         for item in response.result:
             self.offset = item.update_id + 1
 
-            if item.message.text == '/cancle':
+            if item.message.text == '/cancel':
                 continue
             else:
                 goal = Goal(title=item.message.text, category=category, user=tg_user.user)
