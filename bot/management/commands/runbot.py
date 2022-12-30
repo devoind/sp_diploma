@@ -85,17 +85,41 @@ class Command(BaseCommand):
                 else:
                     self.tg_client.send_message(tg_user.tg_chat_id, 'Категория не существует')
 
-    def create_goal(self, tg_user, category):
-        self.tg_client.send_message(tg_user.tg_chat_id, 'Укажи название задачи. \n'
-                                                        'Для отмены введи /cancel')
+    # def create_goal(self, tg_user: TgUser, category: GoalCategory):
+    #     """Создание новой цели через Telegram-Bot"""
+    #     self.tg_client.send_message(tg_user.tg_chat_id, 'Укажите название задачи. Для отмены введи /cancel')
+    #
+    #     flag = True
+    #     while flag:
+    #         response = self.tg_client.get_updates(offset=self.offset)
+    #         for item in response.result:
+    #             self.offset = item.update_id + 1
+    #             if item.message.text == '/cancel':
+    #                 flag = False
+    #             else:
+    #                 goal = Goal(title=item.message.text, category=category, user=tg_user.user)
+    #                 goal.save()
 
-        response = self.tg_client.get_updates(offset=self.offset)
-        for item in response.result:
-            self.offset = item.update_id + 1
+    def create_goal(self, category: GoalCategory, user_tg: TgUser) -> None:
+        """Создание новой цели через Telegram-Bot"""
+        self.tg_client.send_message(chat_id=user_tg.chat_id, text=f'Введите заголовок цели')
 
-            if item.message.text == '/cancel':
-                continue
-            else:
-                goal = Goal(title=item.message.text, category=category, user=tg_user.user)
-                goal.save()
-                self.tg_client.send_message(tg_user.tg_chat_id, f'Создана задача {goal.title}')
+        flag = True
+        while flag:
+            response = self.tg_client.get_updates(offset=self.offset)
+            for item in response.result:
+                self.offset = item.update_id + 1
+
+                if item.message.text == '/cancel':
+                    self.tg_client.send_message(chat_id=user_tg.chat_id, text='Операция отменена')
+                    flag = False
+
+                else:
+                    goal = Goal.objects.create(category=category, user=user_tg.user, title=item.message.text)
+                    self.tg_client.send_message(
+                        chat_id=user_tg.chat_id,
+                        text=f'Цель создана\n'
+                             f'{goal.title}\n'
+                             f'{goal.category}'
+                    )
+                    flag = False
