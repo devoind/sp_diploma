@@ -1,4 +1,3 @@
-from django.core.validators import MinLengthValidator
 from django.db import models
 
 import string
@@ -10,8 +9,6 @@ class TgUser(models.Model):
     tg_user_id = models.BigIntegerField(unique=True)
     user = models.ForeignKey('core.User', null=True, blank=True, verbose_name='Пользователь', on_delete=models.CASCADE)
     verification_code = models.CharField(max_length=6, unique=True, null=True, blank=True)
-    tg_username = models.CharField(max_length=32, validators=[MinLengthValidator(5)], null=True, blank=True,
-                                   verbose_name="Имя пользователя")
 
     def set_verification_code(self) -> None:
         code = string.digits + string.ascii_letters
@@ -24,5 +21,5 @@ class TgUser(models.Model):
         self.save()
 
     class Meta:
-        verbose_name = 'TG пользователь'
-        verbose_name_plural = 'TG пользователи'
+        verbose_name = 'Telegram пользователь'
+        verbose_name_plural = 'Telegram пользователи'

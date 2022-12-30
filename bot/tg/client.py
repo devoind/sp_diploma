@@ -17,10 +17,10 @@ class TgClient:
         """
         Получение ботом исходящих сообщений от пользователя
         """
-        url = self.get_url("getUpdates")
-        response = requests.get(url, params={"offset": offset, "timeout": timeout})
-        # response = requests.get(self.get_url(f'getUpdates?offset={offset}&timeout={timeout}&'
-        #                                      f'allowed_updates=["update_id","message"]'))
+        # url = self.get_url("getUpdates")
+        # response = requests.get(url, params={"offset": offset, "timeout": timeout})
+        response = requests.get(self.get_url(f'getUpdates?offset={offset}&timeout={timeout}&'
+                                             f'allowed_updates=["update_id","message"]'))
         print(response.json())
         return dc.GET_UPDATES_SCHEMA.load(response.json())
 
