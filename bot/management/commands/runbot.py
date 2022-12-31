@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.management import BaseCommand
 
 from bot.models import TgUser
@@ -87,15 +89,28 @@ class Command(BaseCommand):
 
     def create_goal(self, tg_user: TgUser, category: GoalCategory):
         """Создание новой цели через Telegram-Bot"""
-        self.tg_client.send_message(tg_user.tg_chat_id, 'Укажите название задачи. Для отмены введи /cancel')
+        self.tg_client.send_message(chat_id=tg_user.tg_chat_id,
+                                    text='Укажите название задачи. Для отмены введите /cancel'
+                                    )
 
         flag = True
         while flag:
             response = self.tg_client.get_updates(offset=self.offset)
             for item in response.result:
                 self.offset = item.update_id + 1
-                if item.message.text == '/cancel':
+
+                if item.message.text.strip().lower() == "/cancel":
+                    self.tg_client.send_message(chat_id=item.message.chat.id, text='Cоздание цели прервано')
                     flag = False
                 else:
-                    goal = Goal(title=item.message.text, category=category, user=tg_user.user)
-                    goal.save()
+                    due_date = datetime.date.today() + datetime.timedelta(days=14)
+                    goal = Goal.objects.create(
+                        category=category,
+                        user=tg_user.user,
+                        title=item.message.text,
+                        description='Цель создана в Telegram',
+                        due_date=due_date.strftime('%Y-%m-%d')
+                    )
+                    self.tg_client.send_message(
+                        chat_id=item.message.chat.id, text=f'Цель [{goal.title}] успешно создана')
+                    flag = False
