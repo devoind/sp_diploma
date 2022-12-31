@@ -114,3 +114,4 @@ class Command(BaseCommand):
                     self.tg_client.send_message(
                         chat_id=item.message.chat.id, text=f'Цель [{goal.title}] успешно создана')
                     flag = False
+
