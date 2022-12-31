@@ -1,10 +1,8 @@
-from datetime import datetime
-
 from django.core.management import BaseCommand
 
 from bot.models import TgUser
 from bot.tg.client import TgClient
-from bot.tg.dc import Message, GetUpdatesResponse
+from bot.tg.dc import Message
 from goals.models import GoalCategory
 from goals.models import Goal
 from todolist.settings import TELEGRAM_BOT_TOKEN
@@ -89,38 +87,15 @@ class Command(BaseCommand):
 
     def create_goal(self, tg_user: TgUser, category: GoalCategory):
         """Создание новой цели через Telegram-Bot"""
-        # self.tg_client.send_message(tg_user.tg_chat_id, 'Укажи название задачи. \n'
-        #                                                 'Для отмены введи /cancel')
+        self.tg_client.send_message(tg_user.tg_chat_id, 'Укажите название задачи. Для отмены введи /cancel')
 
-        # response = self.tg_client.get_updates(offset=self.offset)
-        # for item in response.result:
-        #     self.offset = item.update_id + 1
-        #
-        #     if item.message.text == '/cancel':
-        #         continue
-        #     else:
-        #         goal = Goal(title=item.message.text, category=category, user=tg_user.user)
-        #         goal.save()
-        #         self.tg_client.send_message(tg_user.tg_chat_id, f'Создана задача {goal.title}')
-
-        while True:
-            response: GetUpdatesResponse = self.tg_client.get_updates(offset=self.offset)
+        flag = True
+        while flag:
+            response = self.tg_client.get_updates(offset=self.offset)
             for item in response.result:
                 self.offset = item.update_id + 1
-                if not item.message:
-                    continue
-
-                if item.message.text.strip().lower() == '/cancel':
-                    self.tg_client.send_message(chat_id=item.message.chat.id, text='Cоздание цели прервано')
-                    return
+                if item.message.text == '/cancel':
+                    flag = False
                 else:
-                    goal = Goal.objects.create(
-                        category=category,
-                        user=tg_user.user,
-                        title=item.message.text,
-                        description='Цель создана в Telegram',
-                    )
-                    self.tg_client.send_message(
-                        chat_id=item.message.chat.id, text=f'Цель [{goal.title}] успешно создана')
-                    return
-
+                    goal = Goal(title=item.message.text, category=category, user=tg_user.user)
+                    goal.save()
